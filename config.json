@@ -3,6 +3,6 @@
     "adminUserId": 93195391,
     "chosenDate": "",
     "mailerInterval": 86400000,
-    "domain":"",
-    "port":80
+    "domain": "",
+    "port": 80
 }
