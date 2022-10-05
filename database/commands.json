@@ -1,0 +1,22 @@
+[
+    {
+        "command": "start",
+        "description": "Запустить бота"
+    },
+    {
+        "command": "army",
+        "description": "Статистика"
+    },
+    {
+        "command": "subscribe",
+        "description": "Подписаться на рассылку обновлений"
+    },
+    {
+        "command": "unsubscribe",
+        "description": "Отписаться от рассылки"
+    },
+    {
+        "command": "about",
+        "description": "Показать справку"
+    }
+]

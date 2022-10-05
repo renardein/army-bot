@@ -1,3 +1,5 @@
+const e = require('express');
+const subscriber = require('../subscribers')
 const dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/;
 function run(bot, config) {
     bot.onText(dateRegEx, (msg, match) => {
@@ -21,7 +23,7 @@ function run(bot, config) {
 Для подписки на рассылку отправь /subscribe
 Для отказа от подписки отправь /unsubscribe`
                 });
-
+                break;
             }
             case '/about': {
                 bot.sendMessage(msg.chat.id, `
@@ -31,19 +33,33 @@ function run(bot, config) {
 Упоролся и разработал @renardein 
 GitHub: https://github.com/renardein/army-timer-bot
 Основано на <a href="https://github.com/yagop/node-telegram-bot-api/">библиотеке</a> от <a href="https://telegram.me/node_telegram_bot_api">@yagop</a>`, { parse_mode: 'HTML' });
+
+                break;
             }
             case '/subscribe': {
-                subscriberId = msg.chat.id
-                    .saddSubscriber(subscriberId)
+                if (subscriber.isExists() !== true) {
+                    subscriberId = msg.chat.id
+                    subscriber.add(subscriberId)
+                    bot.sendMessage(msg.chat.id, "Вы подписались на обновления")
+                }
+                else {
+                    bot.sendMessage(msg.chat.id, "Вы уже подписаны")
+                }
+
+
+
+                break;
             }
             case '/unsubscribe': {
                 subscriberId = msg.chat.id
-                deleteSubscriber(subscriberId)
+                subscriber.remove(subscriberId)
+                bot.sendMessage(msg.chat.id, "Вы отписались от обновалений")
+                break;
             }
             case '/debug': {
 
                 bot.sendMessage(msg.chat.id, process.uptime())
-
+                break;
             }
         }
 

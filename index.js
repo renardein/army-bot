@@ -1,9 +1,9 @@
 const TelegramBot = require('node-telegram-bot-api'),
     fs = require('fs'),
-    bot = require('./modules/bot.js'),
-    mailer = require('./modules/mailer.js'),
-    botCommands = JSON.parse(fs.readFileSync('commands.json'))
-let config = JSON.parse(fs.readFileSync('config.json'));
+    bot = require('./modules/bot/index.js'),
+    mailer = require('./modules/mailer/mailer.js'),
+    botCommands = JSON.parse(fs.readFileSync('database/commands.json'))
+let config = JSON.parse(fs.readFileSync('database/config.json'));
 api = new TelegramBot(config.telegramToken, { polling: true });
 
 bot.run(api, config);
