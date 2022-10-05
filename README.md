@@ -5,7 +5,7 @@
   - [x] Unsubscribe from updates
   - [x] Check if there is a subscriber
   #### Mailer
-  - [] Timer
+  - [ ] Timer
   - [x] Mailer
   - [ ] Message tempalte
   #### Days Counter
