@@ -1,10 +1,14 @@
 # Army Bot
 ### TODO
   #### Subscription
-  - [ ] Subscribe for updates
-  - [ ] Unsubscribe from updates
-  - [ ] Check if there is a subscriber
+  - [x] Subscribe for updates
+  - [x] Unsubscribe from updates
+  - [x] Check if there is a subscriber
   #### Mailer
-  - [ ] Timer
-  - [ ] Mailer
-
+  - [] Timer
+  - [x] Mailer
+  - [ ] Message tempalte
+  #### Days Counter
+  - [ ] Set Date
+  - [ ] Days gone
+  - [ ] Days left

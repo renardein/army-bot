@@ -1,0 +1,45 @@
+{
+    "staticCommands": [
+        {
+            "command": "start",
+            "answer": "Привет! \nЧтобы узнать зачем этот бот существует отправь /about\nДля подписки на рассылку отправь /subscribe\nДля отказа от подписки отправь /unsubscribe"
+        },
+        {
+            "command": "about",
+            "answer": "Этот бесполезный бот создан для оповещения о том, сколько мне осталось служить в армии.\n\nУпоролся и разработал @renardein\nGitHub: https://github.com/renardein/army-bot\nОсновано на [библиотеке](https://github.com/yagop/node-telegram-bot-api) от [@yagop](https://telegram.me/node_telegram_bot_api)"
+        }
+    ],
+    "dynamicCommands": [
+        {
+            "command": "army",
+            "answer": "Точка отсчета: %startDate%\nПрошло дней: %daysPassed%\nОсталось дней: %daysLeft%\nЗа обновлениями следят %subscribers%"
+        },
+        {
+            "command": "debug",
+            "answer": "**Аптайм:** *%uptime% секунд*\n**Использовано памяти:** *%usedMem% мегабайт*"
+        }
+    ],
+    "events": [
+        {
+            "event": "noAdminRights",
+            "answer": "Вы подписались на обновления"
+        },
+        {
+            "event": "userSubscribed",
+            "answer": "Вы подписались на обновления"
+        },
+        {
+            "event": "userExists",
+            "answer": "Вы уже подписаны"
+        },
+        {
+            "event": "userUnubscribed",
+            "answer": "Вы отписались от обновлений"
+        },
+        {
+            "event": "userNotUsubscribed",
+            "answer": "Вы не подписаны"
+        }
+    ],
+    "mailingTempalte": [""]
+}
