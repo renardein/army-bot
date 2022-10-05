@@ -12,7 +12,7 @@
     "dynamicCommands": [
         {
             "command": "army",
-            "answer": "Точка отсчета: %startDate%\nПрошло дней: %daysPassed%\nОсталось дней: %daysLeft%\nЗа обновлениями следят %subscribers%"
+            "answer": "Точка отсчета: %startDate%\nПрошло дней: %daysPassed%\nОсталось %d% дней %h% часов %m% минут\nЗа обновлениями следят %subscribers% человек"
         },
         {
             "command": "debug",

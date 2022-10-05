@@ -1,7 +1,12 @@
+const fs = require('fs')
 function run(bot, config) {
 
     var myInt = setInterval(function () {
-        // bot.sendMessage(93195391,i++)
+        let subscribersList = JSON.parse(fs.readFileSync('database/subscribers.json'));
+        subscribersList.forEach(chatId => {
+            bot.sendMessage(chatId, 'Проверка рассылки')
+        });
+
     }, config.mailerInterval);
 }
 
