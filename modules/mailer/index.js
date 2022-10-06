@@ -9,7 +9,7 @@ function run(bot, config) {
         subscribersList.forEach(chatId => {
             bot.sendMessage(chatId, answers.mailingTempalte)
         });
-        console.log('\x1b[34m', `[Maier] Notifications were sent to ${subscribersList.length} people`)
+        console.log('\x1b[34m', `[Maier] Notifications were sent to ${subscribersList.length} chats`)
     });
     mailerJob.start();
 

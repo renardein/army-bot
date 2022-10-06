@@ -1,12 +1,14 @@
-const subscriber = require('../subscribers')
-const filesystem = require('../filesystem/')
-const answers = filesystem.readJsonFile('./modules/bot/answers.json')
-const timer = require('../servetimer')
-const dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/;
+const subscriber = require('../subscribers'),
+    filesystem = require('../filesystem/'),
+    answers = filesystem.readJsonFile('./modules/bot/answers.json'),
+    timer = require('../servetimer'),
+    dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/;
 function run(bot, config) {
     bot.onText(dateRegEx, (msg, match) => {
         if (msg.from.id == config.adminUserId) {
             bot.sendMessage(msg.chat.id, match[1]);
+            config.chosenDate = match[1];
+            filesystem.writeJsonFile = ('../config.json', config)
         }
         else {
             bot.sendMessage(msg.chat.id, answers.events[0].answer);
@@ -55,6 +57,16 @@ function run(bot, config) {
             }
         }
     });
+
+    CountForm = (number, titles) => {
+        number = Math.abs(number);
+        if (Number.isInteger(number)) {
+            cases = [2, 0, 1, 1, 1, 2];
+            return number + ' ' + titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+        }
+        return titles[1];
+    }
+    //console.log(CountForm(1, ['рубль', 'рубля', 'рублей']));
 }
 
 
