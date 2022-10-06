@@ -41,5 +41,5 @@
             "answer": "Вы не подписаны"
         }
     ],
-    "mailingTempalte": [""]
+    "mailingTempalte": "TestMessage"
 }

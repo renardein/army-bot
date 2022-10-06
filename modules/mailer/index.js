@@ -1,13 +1,18 @@
-const fs = require('fs'),
-    cron = require('cron').CronJob;
+const sub = require('../filesystem'),
+    cron = require('cron').CronJob,
+    answers = require('../bot/answers.js')
+
+    
 function run(bot, config) {
     const mailerJob = new cron(config.cronPattern, () => {
-        let subscribersList = JSON.parse(fs.readFileSync('database/subscribers.json'));
+        let subscribersList = sub.readJsonFile('./database/subscribers.json');
         subscribersList.forEach(chatId => {
-            bot.sendMessage(chatId, 'Проверка рассылки')
+            bot.sendMessage(chatId, answers.str.mailingTempalte)
         });
+        console.log('\x1b[34m',`[Maier] Notifications were sent to ${subscribersList.length} people`)
     });
     mailerJob.start();
+    
 }
 
 module.exports.run = run;
