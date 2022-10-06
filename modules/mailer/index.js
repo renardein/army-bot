@@ -1,13 +1,13 @@
-const fs = require('fs')
+const fs = require('fs'),
+    cron = require('cron').CronJob;
 function run(bot, config) {
-
-    var myInt = setInterval(function () {
+    const mailerJob = new cron(config.cronPattern, () => {
         let subscribersList = JSON.parse(fs.readFileSync('database/subscribers.json'));
         subscribersList.forEach(chatId => {
             bot.sendMessage(chatId, 'Проверка рассылки')
         });
-
-    }, config.mailerInterval);
+    });
+    mailerJob.start();
 }
 
 module.exports.run = run;

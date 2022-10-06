@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cron": "^2.1.0",
     "node-telegram-bot-api": "^0.59.0"
   }
 }
