@@ -2,9 +2,10 @@ const TelegramBot = require('node-telegram-bot-api'),
     fs = require('fs'),
     bot = require('./modules/bot/index.js'),
     mailer = require('./modules/mailer/index.js'),
-    botCommands = JSON.parse(fs.readFileSync('modules/bot/commands.json'))
+    botCommands = JSON.parse(fs.readFileSync('modules/bot/commands.json'));
+    require('dotenv').config();
 let config = JSON.parse(fs.readFileSync('config.json'));
-api = new TelegramBot(config.telegramToken, { polling: true });
+api = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 
 bot.run(api, config);
 mailer.run(api, config);
