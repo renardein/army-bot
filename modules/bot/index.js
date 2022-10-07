@@ -42,7 +42,7 @@ function run(bot, config) {
                 break;
             }
             case '/army': {
-                bot.sendMessage(msg.chat.id, answers.dynamicCommands[0].answer.replace(new RegExp("%d%", "g"), timer.getDate(config.chosenDate).d))
+                bot.sendMessage(msg.chat.id, answers.dynamicCommands[0].answer.replace(new RegExp("%d%", "g"), timer.getDate(config.chosenDate).d, { parse_mode: 'markdown' }))
                 break;
             }
             case '/set': {
