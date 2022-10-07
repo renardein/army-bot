@@ -2,21 +2,11 @@ const subscriber = require('../subscribers'),
     filesystem = require('../filesystem/'),
     answers = filesystem.readJsonFile('./modules/bot/answers.json'),
     timer = require('../servetimer'),
-    dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/;
+    dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/ig
 function run(bot, config) {
-    bot.onText(dateRegEx, (msg, match) => {
-        if (msg.from.id == config.adminUserId) {
-            bot.sendMessage(msg.chat.id, match[1]);
-            config.chosenDate = match[1];
-            filesystem.writeJsonFile = ('../config.json', config)
-        }
-        else {
-            bot.sendMessage(msg.chat.id, answers.events[0].answer);
-        }
-    });
-
     bot.on('message', (msg) => {
-        switch (msg.text) {
+        let commandData = msg.text.split(' ');
+        switch (commandData[0]) {
             case '/start': {
                 bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
                     caption: answers.staticCommands[0].answer
@@ -55,19 +45,27 @@ function run(bot, config) {
                 bot.sendMessage(msg.chat.id, answers.dynamicCommands[0].answer.replace(new RegExp("%d%", "g"), timer.getDate(config.chosenDate).d))
                 break;
             }
+            case '/set': {
+                if (msg.from.id == config.adminUserId) {
+                    if (dateRegEx.test(commandData[1])) {
+                        config.chosenDate = commandData[1];
+                        filesystem.writeJsonFile = ('../config.json', config);
+                        bot.sendMessage(msg.chat.id, answers.events[5].answer.replace(new RegExp("%startingPoint%", "g"), commandData[1]));
+                    } else {
+                        bot.sendMessage(msg.chat.id, answers.events[6].answer.replace(new RegExp("%startingPoint%", "g"), commandData[1]));
+                    }
+                }
+                else {
+                    bot.sendMessage(msg.chat.id, answers.events[2].answer);
+                }
+                break;
+            }
         }
     });
 
-    CountForm = (number, titles) => {
-        number = Math.abs(number);
-        if (Number.isInteger(number)) {
-            cases = [2, 0, 1, 1, 1, 2];
-            return number + ' ' + titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
-        }
-        return titles[1];
-    }
-    //console.log(CountForm(1, ['рубль', 'рубля', 'рублей']));
 }
+
+
 
 
 module.exports.run = run;
