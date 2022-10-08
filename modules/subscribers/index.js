@@ -1,24 +1,25 @@
-var filesystem = require('../filesystem')
+var filesystem = require('../filesystem'),
+dataPath= './database/subscribers.json';
 
 function isExists(chatId) {
-    var json = filesystem.readJsonFile('./database/subscribers.json')
+    var json = filesystem.readJsonFile(dataPath)
     if (json.includes(chatId))
         return true
     else
         return false
 }
 function add(chatId) {
-    var json = filesystem.readJsonFile('./database/subscribers.json');
+    var json = filesystem.readJsonFile(dataPath);
     json.push(chatId);
-    filesystem.writeJsonFile('./database/subscribers.json',json);
+    filesystem.writeJsonFile(dataPath,json);
 }
 function remove(chatId) {
-    var json = filesystem.readJsonFile('./database/subscribers.json')
+    var json = filesystem.readJsonFile(dataPath)
     var filteredJson = json.filter(x => x !== chatId);
-    filesystem.writeJsonFile('./database/subscribers.json', filteredJson);
+    filesystem.writeJsonFile(dataPath, filteredJson);
 }
 function count(chatId) {
-    var json = filesystem.readJsonFile()
+    var json = filesystem.readJsonFile(dataPath)
     return json.length;
 }
 

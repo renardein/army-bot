@@ -1,8 +1,8 @@
 const subscriber = require('../subscribers'),
     filesystem = require('../filesystem/'),
-    answers = filesystem.readJsonFile('./modules/bot/answers.json'),
     timer = require('../servetimer'),
-    dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/ig
+    answers = require('./gen_answer.js'),
+    dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/ig;
 function run(bot, config) {
     bot.on('message', (msg) => {
         let commandData = msg.text.split(' ');
@@ -38,11 +38,30 @@ function run(bot, config) {
                 break;
             }
             case '/debug': {
-                bot.sendMessage(msg.chat.id, answers.dynamicCommands[1].answer.replace(new RegExp("%uptime%", "g"), Math.round(process.uptime())).replace(new RegExp("%usedMem%", "g"), Math.round(process.memoryUsage().rss / 1024 / 1024)), { parse_mode: 'markdown' });
+                let debug = {
+                    uptime: Math.round(process.uptime()),
+                    usedMem: Math.round(process.memoryUsage().rss / 1024 / 1024)
+                };
+                bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.dynamicCommands[1].answer,
+                    ['%uptime%', '%usedMem%'], [debug.uptime, debug.usedMem]),
+                    { parse_mode: 'markdown' });
+
                 break;
             }
             case '/army': {
-                bot.sendMessage(msg.chat.id, answers.dynamicCommands[0].answer.replace(new RegExp("%d%", "g"), timer.getDate(config.chosenDate).d), { parse_mode: 'markdown' })
+                let army = {
+                    startDate: null,
+                    daysPassed: null,
+                    d: null,
+                    h: null,
+                    m: null,
+                    subscribers : subscriber.count()
+                }
+                bot.sendMessage(msg.chat.id,
+                    answers.getTemplateString(answers.dynamicCommands[0].answer,
+                        ['%startDate%', '%daysPassed%', '%d%', '%h%', '%m%', '%subscribers%'],
+                        [army.startDate, army.daysPassed, army.d, army.h, army.m, army.subscribers]),
+                    { parse_mode: 'markdown' })
                 break;
             }
             case '/set': {
