@@ -5,10 +5,11 @@
   - [x] Unsubscribe from updates
   - [x] Check if there is a subscriber
   #### Mailer
-  - [ ] Timer
+  - [x] Timer
   - [x] Mailer
-  - [ ] Message tempalte
+  - [x] Message tempalte
   #### Days Counter
-  - [ ] Set Date
-  - [ ] Days gone
-  - [ ] Days left
+  - [x] Set Date
+  - [x] Days gone
+  - [x] Days left
+  - [x] Serve Progress

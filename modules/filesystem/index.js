@@ -1,12 +1,14 @@
 const fs = require('fs');
+
+//Получает [Object] после чтения JSON файла
 function readJsonFile(path) {
     var data = JSON.parse(fs.readFileSync(path));
     return data;
 }
 
-function writeJsonFile(path,json) {
-    fs.writeFileSync(path, JSON.stringify(json))
+//Записывает [Object] в JSON файл
+function writeJsonFile(path, json) {
+    fs.writeFileSync(path, JSON.stringify(json), error => console.log(error))
 }
 
-module.exports.readJsonFile = readJsonFile;
-module.exports.writeJsonFile = writeJsonFile;
+module.exports = { readJsonFile, writeJsonFile }
