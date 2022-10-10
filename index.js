@@ -12,3 +12,4 @@ mailer.run(api, config);
 api.setMyCommands(botCommands, { scope: { type: "all_group_chats" }, language_code: "ru" });
 api.getMe().then((me) => { console.log('\x1b[32m', `@${me.username} started.`) });
 api.on('message', (msg) => { console.log('\x1b[37m', `[#${msg.message_id}] [@${msg.from.username}](${msg.chat.id}) => ${msg.text}`) });
+//test
