@@ -1,8 +1,8 @@
 const subscriber = require('../subscribers'),
     filesystem = require('../filesystem/'),
-    timer = require('../servetimer'),
     answers = require('./gen_answer.js'),
-    dateRegEx = /\/set\s(\d{2}[./-]\d{2}[./-]\d{4}$)/ig;
+    dayjs = require('../dayjs'),
+    dateRegEx = /(\d{2}[./-]\d{2}[./-]\d{4}$)/ig;
 function run(bot, config) {
     bot.on('message', (msg) => {
         let commandData = msg.text.split(' ');
@@ -49,29 +49,33 @@ function run(bot, config) {
                 break;
             }
             case '/army': {
-                let army = {
-                    startDate: null,
-                    daysPassed: null,
-                    d: null,
-                    h: null,
-                    m: null,
-                    subscribers : subscriber.count()
-                }
+
+                var data = dayjs.getServeTime(config.chosenDate, 'command');
+
                 bot.sendMessage(msg.chat.id,
                     answers.getTemplateString(answers.dynamicCommands[0].answer,
-                        ['%startDate%', '%daysPassed%', '%d%', '%h%', '%m%', '%subscribers%'],
-                        [army.startDate, army.daysPassed, army.d, army.h, army.m, army.subscribers]),
+                        ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%progress%', '%subscribers%'],
+                        [data.startDate, data.endDate, data.totalDays, data.daysPassed, data.daysLeft, data.progress, data.subscribers]),
                     { parse_mode: 'markdown' })
                 break;
             }
             case '/set': {
                 if (msg.from.id == config.adminUserId) {
-                    if (dateRegEx.test(commandData[1])) {
-                        config.chosenDate = commandData[1];
-                        filesystem.writeJsonFile = ('../config.json', config);
-                        bot.sendMessage(msg.chat.id, answers.events[5].answer.replace(new RegExp("%startingPoint%", "g"), commandData[1]));
-                    } else {
-                        bot.sendMessage(msg.chat.id, answers.events[6].answer.replace(new RegExp("%startingPoint%", "g"), commandData[1]));
+                    switch (commandData[1]) {
+                        case 'date': {
+                            if (dateRegEx.test(commandData[2])) {
+                                config.chosenDate = commandData[2];
+                                filesystem.writeJsonFile = ('..../config.json', config);
+                                bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[5].answer, ['%startingPoint%'], [commandData[2]]));
+                            } else {
+                                bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[6].answer, ['%startingPoint%'], [commandData[2]]));
+                            }
+                            break;
+                        }
+                        case 'cron': {
+                            bot.sendMessage(msg.chat.id, commandData[2])
+                            break;
+                        }
                     }
                 }
                 else {
@@ -83,8 +87,5 @@ function run(bot, config) {
     });
 
 }
-
-
-
 
 module.exports.run = run;
