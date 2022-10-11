@@ -1,6 +1,6 @@
-const fsys = require('../filesystem'),
+const fsys = require('../../filesystem'),
     cron = require('cron').CronJob,
-    answers = require('../bot/gen_answer'),
+    answers = require('../gen_answer'),
     dayjs = require('../dayjs')
 
 function run(bot, config) {

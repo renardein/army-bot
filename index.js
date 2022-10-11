@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api'),
-    bot = require('./modules/bot/index.js'),
-    mailer = require('./modules/mailer/index.js'),
+    bot = require('./modules/bot'),
+    mailer = require('./modules/bot/mailer'),
     fs = require('./modules/filesystem'),
     fsm = require('fs'),
     botCommands = fs.readJsonFile('modules/bot/commands.json');
@@ -18,4 +18,3 @@ mailer.run(api, config);
 api.setMyCommands(botCommands, { scope: { type: "all_group_chats" }, language_code: "ru" });
 api.getMe().then((me) => { console.log('\x1b[32m', `@${me.username} started.`) });
 api.on('message', (msg) => { console.log('\x1b[37m', `[#${msg.message_id}] [@${msg.from.username}](${msg.chat.id}) => ${msg.text}`) });
-//test

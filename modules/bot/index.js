@@ -1,7 +1,7 @@
 const subscriber = require('../subscribers'),
     filesystem = require('../filesystem/'),
     answers = require('./gen_answer.js'),
-    dayjs = require('../dayjs'),
+    dayjs = require('./dayjs'),
     dateRegEx = /(\d{2}[./-]\d{2}[./-]\d{4}$)/ig;
 function run(bot, config) {
     bot.on('message', (msg) => {
