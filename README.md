@@ -1,15 +1,25 @@
 # Army Bot
-### TODO
+### Project Roadmap
   #### Subscription
   - [x] Subscribe for updates
   - [x] Unsubscribe from updates
   - [x] Check if there is a subscriber
   #### Mailer
-  - [x] Timer
+  - [x] Timer (cronJob)
+  - [ ] Set cron pattern using bot command 
   - [x] Mailer
   - [x] Message tempalte
+  - [x] Jokes
   #### Days Counter
   - [x] Set Date
   - [x] Days gone
   - [x] Days left
   - [x] Serve Progress
+  #### HTTP
+  - [ ] Set starting point via web
+  #### Code
+  - [ ] Use a Database instead of JSON
+  - [ ] async/await
+  - [ ] Optimization?
+  - [ ] Merge some modules
+  - [ ] Error Handling
