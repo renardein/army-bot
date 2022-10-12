@@ -25,3 +25,4 @@
   - [ ] Optimization?
   - [ ] Merge some modules
   - [ ] Error Handling
+  - [ ] Rewrite logger
