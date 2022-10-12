@@ -4,6 +4,8 @@
   - [x] Subscribe for updates
   - [x] Unsubscribe from updates
   - [x] Check if there is a subscriber
+  - [x] Subscribe a chat after bot join
+  - [ ] Unsubscribe a chat after bot kick
   #### Mailer
   - [x] Timer (cronJob)
   - [ ] Set cron pattern using bot command 

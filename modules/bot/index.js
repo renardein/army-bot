@@ -1,16 +1,18 @@
+const { MessageSource } = require('vk-io');
+
 const subscriber = require('../subscribers'),
     filesystem = require('../filesystem/'),
     answers = require('./gen_answer.js'),
     dayjs = require('./dayjs'),
     dateRegEx = /(\d{2}[./-]\d{2}[./-]\d{4}$)/ig;
 async function run(bot, config) {
-    bot.on('message', async (msg) => {
+    bot.on('text', async msg => {
         let commandData = msg.text.split(' ');
         switch (commandData[0]) {
             case '/start': {
-                // await bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
-                //     caption: answers.staticCommands[0].answer
-                // });
+                await bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
+                    caption: answers.staticCommands[0].answer
+                });
                 break;
             }
             case '/about': {
@@ -85,7 +87,20 @@ async function run(bot, config) {
             }
         }
     });
-
+    bot.on('my_chat_member', (async msg => {
+        console.log(msg)
+        if (msg.new_chat_member.user.id = 5382306522 && msg.new_chat_member.status == 'member' && msg.chat.type == 'group') {
+            if (!subscriber.isExists(msg.chat.id)) {
+                subscriber.add(msg.chat.id)
+                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer,['%chatName%'],[msg.chat.title]))
+            }
+            else {
+                await bot.sendMessage(msg.chat.id, answers.events[2].answer)
+            }
+        }
+        
+        }))
+    
 }
 
 module.exports.run = run;
