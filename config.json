@@ -1,5 +1,5 @@
 {
     "adminUserId": 93195391,
     "chosenDate": "15-05-2022",
-    "cronPattern": "00 12 * * *"
+    "cronPattern": "* * * * *"
 }

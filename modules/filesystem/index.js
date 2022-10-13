@@ -2,7 +2,7 @@ const fs = require('fs');
 
 //Получает [Object] после чтения JSON файла
 function readJsonFile(path) {
-    var data = JSON.parse(fs.readFileSync(path));
+    let data = JSON.parse(fs.readFileSync(path));
     return data;
 }
 

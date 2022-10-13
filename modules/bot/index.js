@@ -1,5 +1,3 @@
-const { MessageSource } = require('vk-io');
-
 const subscriber = require('../subscribers'),
     filesystem = require('../filesystem/'),
     answers = require('./gen_answer.js'),
@@ -16,7 +14,7 @@ async function run(bot, config) {
                 break;
             }
             case '/about': {
-                await bot.sendMessage(msg.chat.id, answers.staticCommands[1].answer, { parse_mode: 'markdown' });
+                await bot.sendMessage(msg.chat.id, answers.staticCommands[1].answer, { parse_mode: 'markdown' , disable_web_page_preview :true});
                 break;
             }
             case '/subscribe': {
@@ -24,9 +22,8 @@ async function run(bot, config) {
                     subscriber.add(msg.chat.id)
                     await bot.sendMessage(msg.chat.id, answers.events[1].answer)
                 }
-                else {
+                else
                     await bot.sendMessage(msg.chat.id, answers.events[2].answer)
-                }
                 break;
             }
             case '/unsubscribe': {
@@ -34,9 +31,8 @@ async function run(bot, config) {
                     subscriber.remove(msg.chat.id)
                     await bot.sendMessage(msg.chat.id, answers.events[3].answer)
                 }
-                else {
+                else
                     await bot.sendMessage(msg.chat.id, answers.events[4].answer)
-                }
                 break;
             }
             case '/debug': {
@@ -47,12 +43,11 @@ async function run(bot, config) {
                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.dynamicCommands[1].answer,
                     ['%uptime%', '%usedMem%'], [debug.uptime, debug.usedMem]),
                     { parse_mode: 'markdown' });
-
                 break;
             }
             case '/army': {
 
-                var data = await dayjs.getServeTime(config.chosenDate, 'command');
+                let data = await dayjs.getServeTime(config.chosenDate, 'command');
 
                 await bot.sendMessage(msg.chat.id,
                     answers.getTemplateString(answers.dynamicCommands[0].answer,
@@ -69,20 +64,22 @@ async function run(bot, config) {
                                 config.chosenDate = commandData[2];
                                 filesystem.writeJsonFile = ('..../config.json', config);
                                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[5].answer, ['%startingPoint%'], [commandData[2]]));
-                            } else {
+                            } else
                                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[6].answer, ['%startingPoint%'], [commandData[2]]));
-                            }
+
                             break;
                         }
                         case 'cron': {
-                            await bot.sendMessage(msg.chat.id, commandData[2])
+                            let time = commandData[2].split(':');
+                            let cronPattern = `${time[1]} ${time[0]} * * *`
+                            await bot.sendMessage(msg.chat.id, `${commandData[2]} => ${cronPattern}`)
                             break;
                         }
                     }
                 }
-                else {
+                else
                     await bot.sendMessage(msg.chat.id, answers.events[2].answer);
-                }
+
                 break;
             }
         }
@@ -92,15 +89,15 @@ async function run(bot, config) {
         if (msg.new_chat_member.user.id = 5382306522 && msg.new_chat_member.status == 'member' && msg.chat.type == 'group') {
             if (!subscriber.isExists(msg.chat.id)) {
                 subscriber.add(msg.chat.id)
-                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer,['%chatName%'],[msg.chat.title]))
+                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%chatName%'], [msg.chat.title]))
             }
-            else {
+            else
                 await bot.sendMessage(msg.chat.id, answers.events[2].answer)
-            }
+
         }
-        
-        }))
-    
+
+    }))
+
 }
 
 module.exports.run = run;
