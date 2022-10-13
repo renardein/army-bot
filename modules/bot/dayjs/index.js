@@ -1,13 +1,9 @@
 const dayjs = require('dayjs'),
     fsm = require('../../filesystem'),
-    utc = require('dayjs/plugin/utc'),
-    timezone = require('dayjs/plugin/timezone'),// dependent on utc plugin
     customParseFormat = require('dayjs/plugin/customParseFormat'),
-    joke = require('../joke')
-dayjs.extend(customParseFormat);
-dayjs.extend(timezone);
-dayjs.extend(utc);
-dayjs.tz.setDefault("Asia/Krasnoyarsk");
+    joke = require('../joke');
+    dayjs.extend(customParseFormat);
+   
 
 async function getServeTime(startTime, type) {
 
@@ -34,7 +30,7 @@ async function getServeTime(startTime, type) {
                 daysPassed: dayjs().diff(startDate, 'day'),  // Дней прошло
                 daysLeft: endDate.diff(dayjs(), 'day'), //Дней осталось
                 progress: Math.round(dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100), //Прогресс в процентах
-                joke: await joke.getJoke()
+                joke: await joke.getJoke() // Ржомба
             }
             return data;
         }

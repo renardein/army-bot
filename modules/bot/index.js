@@ -3,9 +3,10 @@ const subscriber = require('../subscribers'),
     answers = require('./gen_answer.js'),
     dayjs = require('./dayjs'),
     dateRegEx = /(\d{2}[./-]\d{2}[./-]\d{4}$)/ig;
+
 async function run(bot, config) {
     bot.on('text', async msg => {
-        let commandData = msg.text.split(' ');
+        let commandData = msg.text.split(' '); //Корявый парсинг аргументов
         switch (commandData[0]) {
             case '/start': {
                 await bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
@@ -14,10 +15,11 @@ async function run(bot, config) {
                 break;
             }
             case '/about': {
-                await bot.sendMessage(msg.chat.id, answers.staticCommands[1].answer, { parse_mode: 'markdown' , disable_web_page_preview :true});
+                await bot.sendMessage(msg.chat.id, answers.staticCommands[1].answer, { parse_mode: 'markdown', disable_web_page_preview: true });
                 break;
             }
             case '/subscribe': {
+                //Проверка статуса подписки
                 if (!subscriber.isExists(msg.chat.id)) {
                     subscriber.add(msg.chat.id)
                     await bot.sendMessage(msg.chat.id, answers.events[1].answer)
@@ -27,6 +29,7 @@ async function run(bot, config) {
                 break;
             }
             case '/unsubscribe': {
+                //Проверка статуса подписки
                 if (subscriber.isExists(msg.chat.id)) {
                     subscriber.remove(msg.chat.id)
                     await bot.sendMessage(msg.chat.id, answers.events[3].answer)
@@ -36,6 +39,7 @@ async function run(bot, config) {
                 break;
             }
             case '/debug': {
+                //Отладочная информация: аптайм скрипта и съеденная им память
                 let debug = {
                     uptime: Math.round(process.uptime()),
                     usedMem: Math.round(process.memoryUsage().rss / 1024 / 1024)
@@ -91,13 +95,10 @@ async function run(bot, config) {
                 subscriber.add(msg.chat.id)
                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%chatName%'], [msg.chat.title]))
             }
-            else
-                await bot.sendMessage(msg.chat.id, answers.events[2].answer)
-
         }
-
+        else
+            subscriber.remove(msg.chat.id)
     }))
-
 }
 
 module.exports.run = run;
