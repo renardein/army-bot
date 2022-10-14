@@ -1,6 +1,6 @@
 const fsys = require('../../filesystem'),
     answers = require('../gen_answer'),
-    dayjs = require('../dayjs'),
+    dayjs = require('../timer'),
 
     cron = require('cron').CronJob;
 

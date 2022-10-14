@@ -8,8 +8,9 @@ const vk = new VK({
 async function getPostsFromPublic() {
 	try {
 		const posts = await vk.api.wall.get({
-			owner_id: -85443458,
-			count: 100
+			owner_id: -45491419,
+			count: 100,
+			offset: 1
 		});
 		return posts.items
 	}
@@ -32,7 +33,7 @@ async function getJoke() {
 	//Костыль
 	if (typeof data == "object") {
 		//Убираем из массива постов рекламные посты и слишком длинные ржомбы
-		let filtered = data.filter(data => (data.marked_as_ads == 0 && data.text.length <= 512))
+		let filtered = data.filter(data => (data.marked_as_ads == 0 && data.text.length <= 512 && data.text != ""))
 		return filtered[getRandom(1, filtered.length)].text
 	}
 	else return data
