@@ -1,8 +1,9 @@
 const subscriber = require('../subscribers'),
     filesystem = require('../filesystem/'),
     answers = require('./gen_answer.js'),
-    dayjs = require('./dayjs'),
-    dateRegEx = /(\d{2}[./-]\d{2}[./-]\d{4}$)/ig;
+    timer = require('./timer'),
+    dateRegEx = /(\d{2}[./-]\d{2}[./-]\d{4}$)/ig,
+    timeRegEx = /^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$/;
 
 async function run(bot, config) {
     bot.on('text', async msg => {
@@ -50,9 +51,7 @@ async function run(bot, config) {
                 break;
             }
             case '/army': {
-
-                let data = await dayjs.getServeTime(config.chosenDate, 'command');
-
+                let data = await timer.getServeTime(config.chosenDate, 'command');
                 await bot.sendMessage(msg.chat.id,
                     answers.getTemplateString(answers.dynamicCommands[0].answer,
                         ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%progress%', '%subscribers%'],
@@ -74,16 +73,17 @@ async function run(bot, config) {
                             break;
                         }
                         case 'cron': {
-                            let time = commandData[2].split(':');
-                            let cronPattern = `${time[1]} ${time[0]} * * *`
-                            await bot.sendMessage(msg.chat.id, `${commandData[2]} => ${cronPattern}`)
+                            if (timeRegEx.test(commandData[2])) {
+                                let time = commandData[2].match(timeRegEx)
+                                config.cronPattern = `${time[2]} ${time[1]} * * *`
+                                filesystem.writeJsonFile = ('..../config.json', config);
+                                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%time%'], [commandData[2]]));
+                            } else
+                                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[8].answer, ['%input%'], [commandData[2]]));
                             break;
                         }
                     }
                 }
-                else
-                    await bot.sendMessage(msg.chat.id, answers.events[2].answer);
-
                 break;
             }
         }
