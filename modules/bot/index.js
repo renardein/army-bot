@@ -72,14 +72,20 @@ async function run(bot, config) {
 
                             break;
                         }
-                        case 'cron': {
-                            if (timeRegEx.test(commandData[2])) {
-                                let time = commandData[2].match(timeRegEx)
-                                config.cronPattern = `${time[2]} ${time[1]} * * *`
-                                filesystem.writeJsonFile = ('..../config.json', config);
-                                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%time%'], [commandData[2]]));
-                            } else
-                                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[8].answer, ['%input%'], [commandData[2]]));
+                        case 'mailer': {
+                            switch (commandData[2]) {
+                                case 'cron': {
+                                    if (timeRegEx.test(commandData[3])) {
+                                        let time = commandData[2].match(timeRegEx)
+                                        config.cronPattern = `${time[2]} ${time[1]} * * *`
+                                        filesystem.writeJsonFile = ('..../config.json', config);
+                                        await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%time%'], [commandData[2]]));
+                                    } else
+                                        await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[8].answer, ['%input%'], [commandData[2]]));
+                                    break
+                                }
+
+                            }
                             break;
                         }
                     }
@@ -89,7 +95,6 @@ async function run(bot, config) {
         }
     });
     bot.on('my_chat_member', (async msg => {
-        console.log(msg)
         if (msg.new_chat_member.user.id = 5382306522 && msg.new_chat_member.status == 'member' && msg.chat.type == 'group') {
             if (!subscriber.isExists(msg.chat.id)) {
                 subscriber.add(msg.chat.id)

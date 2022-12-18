@@ -1,12 +1,11 @@
 const fsys = require('../../filesystem'),
     answers = require('../gen_answer'),
     dayjs = require('../timer'),
-
     cron = require('cron').CronJob;
 
 async function run(bot, config) {
+    const mailerJob = new cron(config.cronPattern, async () => {
 
-    const mailerJob = new cron(config.cronPattern, async (err) => {
         //Получаем массив с chatId подписанных
         let subscribersList = fsys.readJsonFile('./database/subscribers.json'),
             //Получаем данные с расчетами даты и дней
@@ -17,10 +16,16 @@ async function run(bot, config) {
                 [data.daysPassed, data.daysLeft, data.progress, data.joke]);
         //Рассылаем по списку
         await subscribersList.forEach(chatId => {
-            bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true })
+            try {
+                bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true })
+            }
+            catch (err) {
+                console.log('\x1b[41m', `[ERROR] ${err.message}`)
+            }
         });
         console.log('\x1b[34m', `[Mailer] Notifications were sent to ${subscribersList.length} chats`)
     });
+
     //Запуск таймера рассылки через cron
     mailerJob.start();
 
