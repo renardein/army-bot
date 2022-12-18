@@ -3,10 +3,10 @@
 Этот бесполезный бот создан для оповещения о том, сколько мне осталось служить в армии.
 (У меня шизофрения)
 ### Как это работает?
-Примерно так
-![scr1](https://github.com/renardein/army-bot/blob/master/scr.PNG?raw=true)
-![scr2](https://github.com/renardein/army-bot/blob/master/scr1.PNG?raw=true)
-![scr3](https://github.com/renardein/army-bot/blob/master/scr2.PNG?raw=true)
+Примерно так<br>
+![scr1](https://github.com/renardein/army-bot/blob/master/assets/scr.PNG?raw=true)
+![scr2](https://github.com/renardein/army-bot/blob/master/assets/scr1.PNG?raw=true)
+![scr3](https://github.com/renardein/army-bot/blob/master/assets/scr2.PNG?raw=true)
 ### Дорожная карта
   ##### Механизм подписки на обновления
   - [x] Возможность подписаться на обновления
