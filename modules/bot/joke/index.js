@@ -13,6 +13,7 @@ async function getPostsFromPublic() {
 			offset: 1
 		});
 		return posts.items
+
 	}
 	//Иногда ВК падает и ржомб не будет
 	catch (err) {
@@ -34,6 +35,7 @@ async function getJoke() {
 	if (typeof data == "object") {
 		//Убираем из массива постов рекламные посты и слишком длинные ржомбы
 		let filtered = data.filter(data => (data.marked_as_ads == 0 && data.text.length <= 512 && data.text != ""))
+		data = null
 		return filtered[getRandom(1, filtered.length)].text
 	}
 	else return data

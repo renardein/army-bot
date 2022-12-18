@@ -19,7 +19,8 @@ async function start() {
     //Запуск рассылки 
     await mailer.run(api, config).then((l) => { console.log('\x1b[34m', `[Mailer] Mailer started`) });
     //Отправляем спискок комманд Telegram
-    await api.setMyCommands(botCommands.private, { scope: { type: "all_group_chats" }, language_code: "ru" });
+    await api.setMyCommands(botCommands.private, { scope: { type: "all_private_chats" }, language_code: "ru" });
+    await api.setMyCommands(botCommands.public, { scope: { type: "all_group_chats" }, language_code: "ru" });
     //Консколька
     await api.on('message', (msg) => { console.log('\x1b[37m', `[Bot][#${msg.message_id}] [@${msg.from.username}](${msg.chat.id}) => ${msg.text}`) });
     setInterval(() => console.log('\x1b[37m', `[Debug] Used ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB of RAM`), 900000);

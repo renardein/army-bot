@@ -24,6 +24,7 @@ async function run(bot, config) {
             }
         });
         console.log('\x1b[34m', `[Mailer] Notifications were sent to ${subscribersList.length} chats`)
+        subscribersList, data, message = null;
     });
 
     //Запуск таймера рассылки через cron
