@@ -1,5 +1,5 @@
 const subscriber = require('../subscribers'),
-    filesystem = require('../filesystem/'),
+    fs = require('fs'),
     answers = require('./gen_answer.js'),
     timer = require('./timer'),
     dateRegEx = /(\d{2}[./-]\d{2}[./-]\d{4}$)/ig,
@@ -65,7 +65,7 @@ async function run(bot, config) {
                         case 'date': {
                             if (dateRegEx.test(commandData[2])) {
                                 config.chosenDate = commandData[2];
-                                filesystem.writeJsonFile = ('..../config.json', config);
+                                fs.writeFileSync("../config.json", JSON.stringify(config), error => console.log(error))
                                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[5].answer, ['%startingPoint%'], [commandData[2]]));
                             } else
                                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[6].answer, ['%startingPoint%'], [commandData[2]]));
@@ -78,7 +78,7 @@ async function run(bot, config) {
                                     if (timeRegEx.test(commandData[3])) {
                                         let time = commandData[2].match(timeRegEx)
                                         config.cronPattern = `${time[2]} ${time[1]} * * *`
-                                        filesystem.writeJsonFile = ('..../config.json', config);
+                                        fs.writeFileSync("../config.json", JSON.stringify(config), error => console.log(error))
                                         await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%time%'], [commandData[2]]));
                                     } else
                                         await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[8].answer, ['%input%'], [commandData[2]]));

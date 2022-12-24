@@ -1,5 +1,5 @@
 const dayjs = require('dayjs'),
-    fsm = require('../../filesystem'),
+    fs = require('fs'),
     customParseFormat = require('dayjs/plugin/customParseFormat'),
     joke = require('../joke');
 dayjs.extend(customParseFormat);
@@ -9,7 +9,7 @@ async function getServeTime(startTime, type, vk) {
 
     const startDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true),
         endDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true).add(1, 'year')
-
+    const subscribersCount = JSON.parse(fs.readFileSync('database/subscribers.json')).length;
     switch (type) {
         case 'command': {
             let data = {
@@ -19,7 +19,7 @@ async function getServeTime(startTime, type, vk) {
                 daysPassed: dayjs().diff(startDate, 'day'),  // Дней прошло
                 daysLeft: endDate.diff(dayjs(), 'day'), //Дней осталось
                 progress: (dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4), //Прогресс в процентах
-                subscribers: fsm.readJsonFile('database/subscribers.json').length //Количество подписчиков
+                subscribers: subscribersCount //Количество подписчиков
             }
 
             return data;

@@ -1,4 +1,4 @@
-const fsys = require('../../filesystem'),
+const fs = require('fs'),
     answers = require('../gen_answer'),
     dayjs = require('../timer'),
     cron = require('cron').CronJob;
@@ -7,7 +7,7 @@ async function run(bot, config) {
     const mailerJob = new cron(config.cronPattern, async () => {
 
         //Получаем массив с chatId подписанных
-        let subscribersList = fsys.readJsonFile('./database/subscribers.json'),
+        let subscribersList = JSON.parse(fs.readFileSync('database/subscribers.json')),
             //Получаем данные с расчетами даты и дней
             data = await dayjs.getServeTime(config.chosenDate, 'mailer'),
             //Подменяем переменные в шаблоне сообщений

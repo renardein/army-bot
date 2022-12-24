@@ -1,16 +1,15 @@
 const TelegramBot = require('node-telegram-bot-api'),
     bot = require('./modules/bot'),
     mailer = require('./modules/bot/mailer'),
-    fs = require('./modules/filesystem'),
-    fsm = require('fs'),
-    botCommands = fs.readJsonFile('modules/bot/commands.json');
+    fs = require('fs'),
+    botCommands = JSON.parse(fs.readFileSync('modules/bot/commands.json'));
 require('dotenv').config();
 
-let config = fs.readJsonFile('config.json');
+let config = JSON.parse(fs.readFileSync('config.json'));
 api = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 // Создание файла JSON для хранения списка подписчиков
-if (!fsm.existsSync('./database/subscribers.json'))
-    fsm.writeFileSync('./database/subscribers.json', '[]')
+if (!fs.existsSync('./database/subscribers.json'))
+    fs.writeFileSync('./database/subscribers.json', '[]')
 
 //Запуск бота
 async function start() {
