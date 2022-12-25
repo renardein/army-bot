@@ -11,7 +11,7 @@ _Код в данной ветке проходит рефакторинг с п
 ```
 git clone https://github.com/renardein/army-bot
 cd army-bot
-npm init
+npm install
 ```
 Переименовать `.env_example` в `.env` и прописать в него токены от ВКонтакте и Telegram
 ```
