@@ -1,25 +1,27 @@
-const TelegramBot = require('node-telegram-bot-api'),
-    bot = require('./modules/bot'),
-    mailer = require('./modules/bot/mailer'),
-    fs = require('fs'),
-    botCommands = JSON.parse(fs.readFileSync('modules/bot/commands.json')),
-    process = require('process'),
-    db = require('./database/dbAdapter')
+const { config } = require('dotenv');
+const TelegramBot = require('node-telegram-bot-api');
+const bot = require('./modules/bot');
+const mailer = require('./modules/bot/mailer');
+const fs = require('fs');
+const botCommands = JSON.parse(fs.readFileSync('modules/bot/commands.json'));
+const process = require('process');
+const conf = require('./config');
+
 require('dotenv').config();
 
-let config = JSON.parse(fs.readFileSync('config.json'));
+let currentConfig = conf.readConfig();
 api = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 
 //Запуск бота
 async function start() {
     // Запуск бота
-    await bot.run(api, config);
+    await bot.run(api, currentConfig);
     // Получение информации о боте и вывод сообщения о старте
     const botInfo = await api.getMe();
     console.log('\x1b[32m', `[Bot] @${botInfo.username} started.`);
 
     // Запуск рассылки
-    await mailer.run(api, config).then(() => {
+    await mailer.run(api, currentConfig).then(() => {
         console.log('\x1b[34m', `[Mailer] Mailer started`);
     });
 
@@ -40,15 +42,6 @@ async function start() {
             `[Bot][#${msg.message_id}] [@${msg.from.username}](${msg.chat.id}) => ${msg.text}`
         );
     });
-    // Регулярно выводим информацию о используемой памяти в консоль
-    setInterval(
-        () =>
-            console.log(
-                '\x1b[37m',
-                `[Debug] Used ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB of RAM`
-            ),
-        900000
-    );
 }
 
 
