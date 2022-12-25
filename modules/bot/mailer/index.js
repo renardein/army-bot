@@ -1,27 +1,16 @@
 const fs = require('fs'),
     answers = require('../gen_answer'),
     dayjs = require('../timer'),
-    cron = require('cron').CronJob;
+    cron = require('cron').CronJob,
+    subscriber = require('../../../database/models/subscribers')
 
 let mailerJob;
-
-async function sendMessages(bot, subscribersList, message) {
-    for (const chatId of subscribersList) {
-        try {
-            await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
-            // Пауза в 1 секунду
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        } catch (err) {
-            console.log('\x1b[41m', `[ERROR] ${err.message}`);
-        }
-    }
-}
 
 async function run(bot, config) {
     mailerJob = new cron(config.cronPattern, async () => {
         try {
             //Получаем массив с chatId подписанных
-            const subscribersList = JSON.parse(await fs.promises.readFile('database/subscribers.json'));
+            let subscribersList = await subscriber.getAll();
             //Получаем данные с расчетами даты и дней
             const data = await dayjs.getServeTime(config.chosenDate, 'mailer');
             //Подменяем переменные в шаблоне сообщений
@@ -41,6 +30,17 @@ async function run(bot, config) {
     mailerJob.start();
 }
 
+async function sendMessages(bot, subscribersList, message) {
+    for (const chatId of subscribersList) {
+        try {
+            await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
+            // Пауза в 1 секунду
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (err) {
+            console.log('\x1b[41m', `[ERROR] ${err.message}`);
+        }
+    }
+}
 module.exports = {
     run,
     mailerJob
