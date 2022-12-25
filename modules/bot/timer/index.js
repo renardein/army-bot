@@ -1,15 +1,23 @@
-const dayjs = require('dayjs'),
-    fs = require('fs'),
-    customParseFormat = require('dayjs/plugin/customParseFormat'),
-    joke = require('../joke');
+const dayjs = require('dayjs');
+const fs = require('fs');
+const customParseFormat = require('dayjs/plugin/customParseFormat');
+const joke = require('../joke');
+const subscriber = require("../../../database/models/subscribers");
+
 dayjs.extend(customParseFormat);
 
-
+/**
+ * Получает данные для шаблона сообщения
+ * @param {string} startTime - Дата начала в формате "DD-MM-YYYY"
+ * @param {string} type - Тип данных (command или mailer)
+ * @param {import('vk-io').VK} [vk] - Экземпляр VK API (только для type === 'mailer')
+ * @returns {Object}
+ */
 async function getServeTime(startTime, type, vk) {
-
-    const startDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true),
-        endDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true).add(1, 'year')
-    const subscribersCount = JSON.parse(fs.readFileSync('database/subscribers.json')).length;
+    const startDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true);
+    const endDate = startDate.add(1, 'year');
+    const subscribersCount = await subscriber.count()
+    let data;
     switch (type) {
         case 'command': {
             let data = {

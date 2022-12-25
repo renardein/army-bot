@@ -1,4 +1,4 @@
-const subscriber = require('../subscribers'),
+const subscriber = require('../../database/models/subscribers'),
     fs = require('fs'),
     answers = require('./gen_answer.js'),
     timer = require('./timer'),
@@ -20,34 +20,32 @@ async function run(bot, config) {
                 break;
             }
             case '/subscribe': {
-                //Проверка статуса подписки
+                // Проверка статуса подписки
                 if (!subscriber.isExists(msg.chat.id)) {
-                    subscriber.add(msg.chat.id)
-                    await bot.sendMessage(msg.chat.id, answers.events[1].answer)
+                    //Если нет, то подписываем
+                    await subscriber.add(msg.chat.id);
+                    await bot.sendMessage(msg.chat.id, answers.events[1].answer);
+                } else {
+                    await bot.sendMessage(msg.chat.id, answers.events[2].answer);
                 }
-                else
-                    await bot.sendMessage(msg.chat.id, answers.events[2].answer)
                 break;
             }
             case '/unsubscribe': {
-                //Проверка статуса подписки
+                // Проверка статуса подписки
                 if (subscriber.isExists(msg.chat.id)) {
-                    subscriber.remove(msg.chat.id)
-                    await bot.sendMessage(msg.chat.id, answers.events[3].answer)
+                    //Если есть, то отписываем
+                    await subscriber.remove(msg.chat.id);
+                    await bot.sendMessage(msg.chat.id, answers.events[3].answer);
+                } else {
+                    await bot.sendMessage(msg.chat.id, answers.events[4].answer);
                 }
-                else
-                    await bot.sendMessage(msg.chat.id, answers.events[4].answer)
                 break;
             }
             case '/debug': {
-                //Отладочная информация: аптайм скрипта и съеденная им память
-                let debug = {
-                    uptime: Math.round(process.uptime()),
-                    usedMem: Math.round(process.memoryUsage().rss / 1024 / 1024)
-                };
-                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.dynamicCommands[1].answer,
-                    ['%uptime%', '%usedMem%'], [debug.uptime, debug.usedMem]),
-                    { parse_mode: 'markdown' });
+                const uptime = Math.round(process.uptime());
+                const usedMem = Math.round(process.memoryUsage().rss / 1024 / 1024);
+                const message = answers.getTemplateString(answers.dynamicCommands[1].answer, ['%uptime%', '%usedMem%'], [uptime, usedMem]);
+                await bot.sendMessage(msg.chat.id, message, { parse_mode: 'markdown' });
                 break;
             }
             case '/army': {
@@ -60,31 +58,36 @@ async function run(bot, config) {
                 break;
             }
             case '/set': {
-                if (msg.from.id == config.adminUserId) {
+                // Проверяем, является ли отправитель сообщения администратором
+                if (msg.from.id === config.adminUserId) {
                     switch (commandData[1]) {
                         case 'date': {
+                            // Проверяем, соответствует ли введенная дата регулярному выражению
                             if (dateRegEx.test(commandData[2])) {
                                 config.chosenDate = commandData[2];
-                                fs.writeFileSync("../config.json", JSON.stringify(config), error => console.log(error))
+                                // Записываем изменения в файл конфигурации
+                                fs.writeFileSync("../config.json", JSON.stringify(config), error => console.log(error));
                                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[5].answer, ['%startingPoint%'], [commandData[2]]));
-                            } else
+                            } else {
                                 await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[6].answer, ['%startingPoint%'], [commandData[2]]));
-
+                            }
                             break;
                         }
                         case 'mailer': {
                             switch (commandData[2]) {
                                 case 'cron': {
+                                    // Проверяем, соответствует ли введенное время регулярному выражению
                                     if (timeRegEx.test(commandData[3])) {
-                                        let time = commandData[2].match(timeRegEx)
-                                        config.cronPattern = `${time[2]} ${time[1]} * * *`
-                                        fs.writeFileSync("../config.json", JSON.stringify(config), error => console.log(error))
+                                        const time = commandData[2].match(timeRegEx);
+                                        config.cronPattern = `${time[2]} ${time[1]} * * *`;
+                                        // Записываем изменения в файл конфигурации
+                                        fs.writeFileSync("../config.json", JSON.stringify(config), error => console.log(error));
                                         await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%time%'], [commandData[2]]));
-                                    } else
+                                    } else {
                                         await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[8].answer, ['%input%'], [commandData[2]]));
-                                    break
+                                    }
+                                    break;
                                 }
-
                             }
                             break;
                         }
@@ -94,16 +97,25 @@ async function run(bot, config) {
             }
         }
     });
-    bot.on('my_chat_member', (async msg => {
-        if (msg.new_chat_member.user.id = 5382306522 && msg.new_chat_member.status == 'member' && msg.chat.type == 'group') {
+    // При получении уведомления о добавлении бота в чат
+    bot.on('my_chat_member', async (msg) => {
+        // Если ID нового участника равен 5382306522, он является полноправным участником чата и это групповой чат
+        if (msg.new_chat_member.user.id === 5382306522 &&
+            msg.new_chat_member.status === 'member' &&
+            msg.chat.type === 'group') {
+            // Если этот чат еще не в списке подписчиков
             if (!subscriber.isExists(msg.chat.id)) {
-                subscriber.add(msg.chat.id)
-                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%chatName%'], [msg.chat.title]))
+                // Добавить чат в список подписчиков
+                await subscriber.add(msg.chat.id);
+                // Отправить приветствие в чат
+                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%chatName%'], [msg.chat.title]));
             }
+        } else {
+            // В противном случае, удалить чат из списка подписчиков
+            subscriber.remove(msg.chat.id);
         }
-        else
-            subscriber.remove(msg.chat.id)
-    }))
+    });
+
 }
 
 module.exports.run = run;

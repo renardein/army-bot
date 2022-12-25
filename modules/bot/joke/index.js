@@ -1,44 +1,55 @@
 const { VK } = require('vk-io');
 require('dotenv').config();
+
+// Создание экземпляра VK API с указанным токеном
 const vk = new VK({
-	token: process.env.VK_TOKEN
+	token: process.env.VK_TOKEN,
 });
 
-//Получает все ржомбы из ВК
-async function getPostsFromPublic() {
+/**
+ * Получает все ржомбы из ВК
+ * @returns {Promise<Array<Object> | string>} - Массив постов из публичного аккаунта или строка с сообщением об ошибке
+ */
+const getPostsFromPublic = async () => {
 	try {
 		const posts = await vk.api.wall.get({
 			owner_id: -45491419,
 			count: 100,
-			offset: 1
+			offset: 1,
 		});
-		return posts.items
-
+		return posts.items;
+	} catch (err) {
+		return '❌ Анекдота не будет. ВКонтакте [принял ислам](https://downdetector.br-analytics.ru/vkontakte).';
 	}
-	//Иногда ВК падает и ржомб не будет
-	catch (err) {
-		return "❌ Анекдота не будет. ВКонтакте [принял ислам](https://downdetector.br-analytics.ru/vkontakte)."
-	}
-}
+};
 
-//Кто виноват что в JS нет нормального генератора рандомных чисел из диапазона?
-function getRandom(min, max) {
-	return Math.floor(
-		Math.random() * (max - min) + min
-	)
-}
+/**
+ * Возвращает случайное число в диапазоне от min до max
+ * @param {number} min - Нижняя граница диапазона
+ * @param {number} max - Верхняя граница диапазона
+ * @returns {number} - Случайное число из диапазона
+ */
 
-async function getJoke() {
-	//Получаем массив постов из паблика с ржекичами
+const getRandom = (min, max) => {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+/**
+ * Получает ржомбы из ВК
+ * @returns {Promise<string>} - Ржомба
+ */
+const getJoke = async () => {
+	// Получаем массив постов из паблика с ржекичами
 	let data = await getPostsFromPublic();
-	//Костыль
-	if (typeof data == "object") {
-		//Убираем из массива постов рекламные посты и слишком длинные ржомбы
-		let filtered = data.filter(data => (data.marked_as_ads == 0 && data.text.length <= 512 && data.text != ""))
-		data = null
-		return filtered[getRandom(1, filtered.length)].text
+	if (Array.isArray(data)) {
+		// Убираем из массива постов рекламные посты и слишком длинные ржомбы
+		let filtered = data.filter(data => (data.marked_as_ads == 0 && data.text.length <= 512 && data.text != ""));
+		// Возвращаем случайную ржомбу из отфильтрованного массива
+		return filtered[getRandom(1, filtered.length)].text;
+	} else {
+		//Или ошибку
+		return data;
 	}
-	else return data
 }
 
-module.exports = { getJoke }
+module.exports = { getJoke };
