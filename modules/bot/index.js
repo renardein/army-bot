@@ -20,24 +20,32 @@ async function run(bot, config) {
                 break;
             }
             case '/subscribe': {
-                // Проверка статуса подписки
-                if (!subscriber.isExists(msg.chat.id)) {
-                    //Если нет, то подписываем
-                    await subscriber.add(msg.chat.id);
-                    await bot.sendMessage(msg.chat.id, answers.events[1].answer);
-                } else {
-                    await bot.sendMessage(msg.chat.id, answers.events[2].answer);
+                try {
+                    // Проверка статуса подписки
+                    if (!await subscriber.isExists(msg.chat.id)) {
+                        //Если нет, то подписываем
+                        await subscriber.add(msg.chat.id);
+                        await bot.sendMessage(msg.chat.id, answers.events[1].answer);
+                    } else {
+                        await bot.sendMessage(msg.chat.id, answers.events[2].answer);
+                    }
+                } catch (err) {
+                    console.log('\x1b[41m', `[ERROR] ${err.message}`);
                 }
                 break;
             }
             case '/unsubscribe': {
-                // Проверка статуса подписки
-                if (subscriber.isExists(msg.chat.id)) {
-                    //Если есть, то отписываем
-                    await subscriber.remove(msg.chat.id);
-                    await bot.sendMessage(msg.chat.id, answers.events[3].answer);
-                } else {
-                    await bot.sendMessage(msg.chat.id, answers.events[4].answer);
+                try {
+                    // Проверка статуса подписки
+                    if (await subscriber.isExists(msg.chat.id)) {
+                        //Если есть, то отписываем
+                        await subscriber.remove(msg.chat.id);
+                        await bot.sendMessage(msg.chat.id, answers.events[3].answer);
+                    } else {
+                        await bot.sendMessage(msg.chat.id, answers.events[4].answer);
+                    }
+                } catch (err) {
+                    console.log('\x1b[41m', `[ERROR] ${err.message}`);
                 }
                 break;
             }
