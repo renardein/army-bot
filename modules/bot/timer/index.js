@@ -26,8 +26,9 @@ async function getServeTime(startTime, type, vk) {
                 totalDays: endDate.diff(startDate, 'day'),  // Дней всего
                 daysPassed: dayjs().diff(startDate, 'day'),  // Дней прошло
                 daysLeft: endDate.diff(dayjs(), 'day'), //Дней осталось
-                progress: (dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4), //Прогресс в процентах
+                progressGraphical: generateProgressBar((dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4)),
                 subscribers: subscribersCount //Количество подписчиков
+
             }
 
             return data;
@@ -37,7 +38,7 @@ async function getServeTime(startTime, type, vk) {
             let data = {
                 daysPassed: dayjs().diff(startDate, 'day'),  // Дней прошло
                 daysLeft: endDate.diff(dayjs(), 'day'), //Дней осталось
-                progress: (dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4), //Прогресс в процентах
+                progressGraphical: generateProgressBar((dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4)),
                 joke: await joke.getJoke(vk) // Ржомба
             }
             return data;
@@ -45,6 +46,22 @@ async function getServeTime(startTime, type, vk) {
     }
 
     return data
+}
+
+function generateProgressBar(percentage) {
+    const progressBarLength = 14;
+    const progressBarFilled = Math.floor(percentage / (100 / progressBarLength));
+    const progressBarEmpty = progressBarLength - progressBarFilled;
+
+    let progressBar = '';
+    for (let i = 0; i < progressBarFilled; i++) {
+        progressBar += '🟩';
+    }
+    for (let i = 0; i < progressBarEmpty; i++) {
+        progressBar += '⬜';
+    }
+
+    return `[${progressBar}] ${percentage}%`;
 }
 
 module.exports = { getServeTime };

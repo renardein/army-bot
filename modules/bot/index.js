@@ -60,8 +60,8 @@ async function run(bot, config) {
                 let data = await timer.getServeTime(config.chosenDate, 'command');
                 await bot.sendMessage(msg.chat.id,
                     answers.getTemplateString(answers.dynamicCommands[0].answer,
-                        ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%progress%', '%subscribers%'],
-                        [data.startDate, data.endDate, data.totalDays, data.daysPassed, data.daysLeft, data.progress, data.subscribers]),
+                        ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%subscribers%', '%progressGraphical%'],
+                        [data.startDate, data.endDate, data.totalDays, data.daysPassed, data.daysLeft, data.subscribers, data.progressGraphical]),
                     { parse_mode: 'markdown' })
                 break;
             }

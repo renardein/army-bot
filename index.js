@@ -50,17 +50,6 @@ async function start() {
         900000
     );
 }
-process.on('exit', (code) => {
-    db.close((err) => {
-        if (err) {
-            console.error(err.message);
-        }
-        console.log('Closing the database connection.');
-    });
-});
 
-process.on('SIGINT', () => {
-    console.log('Received SIGINT. Exiting.');
-    process.exit(0);
-});
+
 start();
