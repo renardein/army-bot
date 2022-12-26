@@ -1,6 +1,7 @@
-async function isValidDate(date) {
-    const dateRegEx = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-\d{4}$/;
+const cronRegEx = /^((\*|[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]) (\*|[0-9]|1[0-9]|2[0-3]) (\*|[1-9]|1[0-9]|2[0-9]|3[0-1]) (\*|[1-9]|1[0-2]) (\*|[0-6]))$/;
+const dateRegEx = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-\d{4}$/;
 
+async function isValidDate(date) {
     if (!dateRegEx.test(date)) {
         return false;
     }
@@ -23,4 +24,9 @@ async function isValidDate(date) {
     return day >= 1 && day <= monthDays[month - 1];
 }
 
-module.exports = { isValidDate }
+
+function isValidCronExpression(cronExpression) {
+    return cronRegEx.test(cronExpression);
+}
+
+module.exports = { isValidDate, isValidCronExpression }

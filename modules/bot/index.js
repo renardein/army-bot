@@ -104,14 +104,12 @@ async function run(bot, config) {
                                     `Неверный формат даты: ${date}`,
                                 );
                             }
-
                             break;
                         }
 
                         case 'mailer': {
                             switch (args[0]) {
                                 case 'cron': {
-
                                     break;
                                 }
                             }
@@ -121,24 +119,6 @@ async function run(bot, config) {
                 }
                 break;
             }
-        }
-    });
-    // При получении уведомления о добавлении бота в чат
-    bot.on('my_chat_member', async (msg) => {
-        // Если ID нового участника равен 5382306522, он является полноправным участником чата и это групповой чат
-        if (msg.new_chat_member.user.id === 5382306522 &&
-            msg.new_chat_member.status === 'member' &&
-            msg.chat.type === 'group') {
-            // Если этот чат еще не в списке подписчиков
-            if (!subscriber.isExists(msg.chat.id)) {
-                // Добавить чат в список подписчиков
-                await subscriber.add(msg.chat.id);
-                // Отправить приветствие в чат
-                await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.groupChatAdded, ['%chatName%'], [msg.chat.title]));
-            }
-        } else {
-            // В противном случае, удалить чат из списка подписчиков
-            subscriber.remove(msg.chat.id);
         }
     });
 
