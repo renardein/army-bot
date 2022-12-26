@@ -5,11 +5,11 @@ const mailer = require('./modules/bot/mailer');
 const fs = require('fs');
 const botCommands = JSON.parse(fs.readFileSync('modules/bot/commands.json'));
 const process = require('process');
-const conf = require('./config');
+const { readConfig } = require('./config');
 
 require('dotenv').config();
 
-let currentConfig = conf.readConfig();
+let currentConfig = readConfig();
 api = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 
 //Запуск бота

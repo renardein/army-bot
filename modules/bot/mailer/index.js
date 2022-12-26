@@ -7,13 +7,13 @@ const fs = require('fs'),
 let mailerJob;
 
 async function run(bot, config) {
-    mailerJob = new cron(config.cronPattern, async () => {
+    mailerJob = new cron(config.cronSchedule, async () => {
         try {
             //Получаем массив с chatId подписанных
             let subscribersList = await subscriber.getAll();
 
             //Получаем данные с расчетами даты и дней
-            const data = await dayjs.getServeTime(config.chosenDate, 'mailer');
+            const data = await dayjs.getServeTime(config.armyStartDate, 'mailer');
             //Подменяем переменные в шаблоне сообщений
             const message = answers.getTemplateString(answers.mailingTempalte,
                 ['%daysPassed%', '%daysLeft%', '%joke%', '%progressGraphical%'],
