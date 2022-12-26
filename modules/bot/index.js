@@ -2,27 +2,35 @@ const subscriber = require('../../database/models/subscribers'),
     fs = require('fs'),
     answers = require('./gen_answer.js'),
     timer = require('./timer'),
-    dateRegEx = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-\d{4}$/,
+    configFile = require('../../config'),
+    valid = require('./validators')
+commandRegEx = /^\/(\w+)\s*(.+)?/,
     timeRegEx = /^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$/,
-    configFile = require('../../config');
+    cronExpressionRegEx = /^(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)$/;
 
 async function run(bot, config) {
+
     bot.on('text', async msg => {
-        let commandData = msg.text.split(' '); //Корявый парсинг аргументов
-        switch (commandData[0]) {
-            case '/start': {
+        //Обработчик команд
+        const match = commandRegEx.exec(msg.text);
+        if (!commandRegEx.exec(msg.text)) return;
+        const command = match[1];
+        const args = match[2] ? match[2].split(/\s+/) : [];
+
+        switch (command) {
+            case 'start': {
                 await bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
                     caption: answers.start
                 });
                 break;
             }
 
-            case '/about': {
+            case 'about': {
                 await bot.sendMessage(msg.chat.id, answers.about, { parse_mode: 'markdown', disable_web_page_preview: true });
                 break;
             }
 
-            case '/subscribe': {
+            case 'subscribe': {
                 try {
                     // Проверка статуса подписки
                     if (!await subscriber.isExists(msg.chat.id)) {
@@ -38,7 +46,7 @@ async function run(bot, config) {
                 break;
             }
 
-            case '/unsubscribe': {
+            case 'unsubscribe': {
                 try {
                     // Проверка статуса подписки
                     if (await subscriber.isExists(msg.chat.id)) {
@@ -54,8 +62,8 @@ async function run(bot, config) {
                 break;
             }
 
-            case '/army': {
-                let data = await timer.getServeTime(config.chosenDate, 'command');
+            case 'army': {
+                let data = await timer.getServeTime(config.armyStartDate, 'command');
                 await bot.sendMessage(msg.chat.id,
                     answers.getTemplateString(answers.army,
                         ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%subscribers%', '%progressGraphical%'],
@@ -64,7 +72,7 @@ async function run(bot, config) {
                 break;
             }
 
-            case '/debug': {
+            case 'debug': {
                 const uptime = Math.round(process.uptime());
                 const usedMem = Math.round(process.memoryUsage().rss / 1024 / 1024);
                 const message = answers.getTemplateString(answers.debug, ['%uptime%', '%usedMem%'], [uptime, usedMem]);
@@ -72,18 +80,20 @@ async function run(bot, config) {
                 break;
             }
 
-            case '/set': {
+            case 'set': {
                 // Проверяем, является ли отправитель сообщения администратором
                 if (msg.from.id === config.adminUserId) {
-                    switch (commandData[1]) {
+                    switch (args[0]) {
                         case 'date': {
-                            if (dateRegEx.test(commandData[2])) {
+                            let date = args[1];
+                            if (await valid.isValidDate(date)) {
                                 // Записываем изменения в файл конфигурации
                                 try {
-                                    configFile.setDate(commandData[2]);
+                                    config.armyStartDate = date
+                                    configFile.setArmyStartDate(date);
                                     await bot.sendMessage(
                                         msg.chat.id,
-                                        `Начальная дата успешно установлена: ${commandData[2]}`,
+                                        answers.getTemplateString(answers.newStartingPoint, ['%startingPoint%'], [date]),
                                     );
                                 } catch (error) {
                                     console.error(error);
@@ -91,25 +101,17 @@ async function run(bot, config) {
                             } else {
                                 await bot.sendMessage(
                                     msg.chat.id,
-                                    `Неверный формат даты: ${commandData[2]}`,
+                                    `Неверный формат даты: ${date}`,
                                 );
                             }
+
                             break;
                         }
 
                         case 'mailer': {
-                            switch (commandData[2]) {
+                            switch (args[0]) {
                                 case 'cron': {
-                                    // Проверяем, соответствует ли введенное время регулярному выражению
-                                    if (timeRegEx.test(commandData[3])) {
-                                        const time = commandData[2].match(timeRegEx);
-                                        config.cronPattern = `${time[2]} ${time[1]} * * *`;
-                                        // Записываем изменения в файл конфигурации
-                                        fs.writeFileSync("../config.json", JSON.stringify(config), error => console.log(error));
-                                        await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[7].answer, ['%time%'], [commandData[2]]));
-                                    } else {
-                                        await bot.sendMessage(msg.chat.id, answers.getTemplateString(answers.events[8].answer, ['%input%'], [commandData[2]]));
-                                    }
+
                                     break;
                                 }
                             }
