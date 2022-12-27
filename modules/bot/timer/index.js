@@ -1,15 +1,23 @@
-const dayjs = require('dayjs'),
-    fsm = require('../../filesystem'),
-    customParseFormat = require('dayjs/plugin/customParseFormat'),
-    joke = require('../joke');
+const dayjs = require('dayjs');
+const fs = require('fs');
+const customParseFormat = require('dayjs/plugin/customParseFormat');
+const joke = require('../joke');
+const subscriber = require("../../../database/models/subscribers");
+
 dayjs.extend(customParseFormat);
 
-
+/**
+ * Получает данные для шаблона сообщения
+ * @param {string} startTime - Дата начала в формате "DD-MM-YYYY"
+ * @param {string} type - Тип данных (command или mailer)
+ * @param {import('vk-io').VK} [vk] - Экземпляр VK API (только для type === 'mailer')
+ * @returns {Object}
+ */
 async function getServeTime(startTime, type, vk) {
-
-    const startDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true),
-        endDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true).add(1, 'year')
-
+    const startDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true);
+    const endDate = startDate.add(1, 'year');
+    const subscribersCount = await subscriber.count()
+    let data;
     switch (type) {
         case 'command': {
             let data = {
@@ -18,8 +26,9 @@ async function getServeTime(startTime, type, vk) {
                 totalDays: endDate.diff(startDate, 'day'),  // Дней всего
                 daysPassed: dayjs().diff(startDate, 'day'),  // Дней прошло
                 daysLeft: endDate.diff(dayjs(), 'day'), //Дней осталось
-                progress: (dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4), //Прогресс в процентах
-                subscribers: fsm.readJsonFile('database/subscribers.json').length //Количество подписчиков
+                progressGraphical: generateProgressBar((dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4)),
+                subscribers: subscribersCount //Количество подписчиков
+
             }
 
             return data;
@@ -29,7 +38,7 @@ async function getServeTime(startTime, type, vk) {
             let data = {
                 daysPassed: dayjs().diff(startDate, 'day'),  // Дней прошло
                 daysLeft: endDate.diff(dayjs(), 'day'), //Дней осталось
-                progress: (dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4), //Прогресс в процентах
+                progressGraphical: generateProgressBar((dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4)),
                 joke: await joke.getJoke(vk) // Ржомба
             }
             return data;
@@ -37,6 +46,22 @@ async function getServeTime(startTime, type, vk) {
     }
 
     return data
+}
+
+function generateProgressBar(percentage) {
+    const progressBarLength = 14;
+    const progressBarFilled = Math.floor(percentage / (100 / progressBarLength));
+    const progressBarEmpty = progressBarLength - progressBarFilled;
+
+    let progressBar = '';
+    for (let i = 0; i < progressBarFilled; i++) {
+        progressBar += '🟩';
+    }
+    for (let i = 0; i < progressBarEmpty; i++) {
+        progressBar += '⬜';
+    }
+
+    return `[${progressBar}] ${percentage}%`;
 }
 
 module.exports = { getServeTime };

@@ -1,6 +1,6 @@
-const filesystem = require('../filesystem/'),
-      answers = filesystem.readJsonFile('./modules/bot/answers.json');
-      
+const fs = require('fs'),
+  answers = JSON.parse(fs.readFileSync('./modules/bot/answers.json'));
+
 
 //Заменяет %переменные% в строке на их значения
 function getTemplateString(string, variables, values) {
