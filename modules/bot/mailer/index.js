@@ -1,5 +1,4 @@
-const fs = require('fs'),
-    answers = require('../gen_answer'),
+const answers = require('../gen_answer'),
     dayjs = require('../timer'),
     cron = require('cron').CronJob,
     subscriber = require('../../../database/models/subscribers')
@@ -11,7 +10,6 @@ async function run(bot, config) {
         try {
             //Получаем массив с chatId подписанных
             let subscribersList = await subscriber.getAll();
-
             //Получаем данные с расчетами даты и дней
             const data = await dayjs.getServeTime(config.armyStartDate, 'mailer');
             //Подменяем переменные в шаблоне сообщений
@@ -26,7 +24,6 @@ async function run(bot, config) {
             console.log('\x1b[41m', `[ERROR] ${err.message}`);
         }
     });
-
     //Запуск таймера рассылки через cron
     mailerJob.start();
 }
