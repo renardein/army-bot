@@ -1,6 +1,9 @@
 const { VK } = require('vk-io');
+const config = require('../../../config')
 require('dotenv').config();
 
+let botConfig = config.readConfig();
+let publics = botConfig.jokePublics;
 // Создание экземпляра VK API с указанным токеном
 const vk = new VK({
 	token: process.env.VK_TOKEN,
@@ -11,9 +14,11 @@ const vk = new VK({
  * @returns {Promise<Array<Object> | string>} - Массив постов из публичного аккаунта или строка с сообщением об ошибке
  */
 const getPostsFromPublic = async () => {
+
+	let selectedPublic = publics[getRandom(0, publics.length)]
 	try {
 		const posts = await vk.api.wall.get({
-			owner_id: -45491419,
+			owner_id: selectedPublic,
 			count: 100,
 			offset: 1,
 		});
@@ -45,6 +50,7 @@ const getJoke = async () => {
 		// Убираем из массива постов рекламные посты и слишком длинные ржомбы
 		let filtered = data.filter(data => (data.marked_as_ads == 0 && data.text.length >= 15 <= 512 && data.text != ""));
 		// Возвращаем случайную ржомбу из отфильтрованного массива
+
 		return filtered[getRandom(1, filtered.length)].text;
 	} else {
 		//Или ошибку
