@@ -1,0 +1,28 @@
+name: Deploy master
+uses: einaregilsson/beanstalk-deploy@v21
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: army-bot
+    steps:
+
+    - name: Checkout source code
+      uses: actions/checkout@v2
+
+    - name: Generate deployment package
+      run: zip -r deploy.zip . -x '*.git*'
+
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v21
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: army-bot
+        environment_name: Armybot-env
+        version_label: 12345
+        region: eu-south-1
+        deployment_package: deploy.zip
