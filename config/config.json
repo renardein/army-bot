@@ -1,5 +1,9 @@
 {
   "cronSchedule": "* * * * *",
-  "armyStartDate": "32-12-2020",
-  "adminUserId": 93195391
+  "armyStartDate": "20-11-2022",
+  "adminUserId": 93195391,
+  "jokePublics": [
+    -45491419,
+    -149279263
+  ]
 }
