@@ -1,10 +1,8 @@
 const fs = require('fs');
 
-const configPath = 'config/config.json';
-
 function readConfig() {
     try {
-        const configFile = fs.readFileSync(configPath, 'utf8');
+        const configFile = fs.readFileSync('config/config.json', 'utf8');
         return JSON.parse(configFile);
     } catch (error) {
         console.error(error);
@@ -15,7 +13,7 @@ function readConfig() {
 function writeConfig(config) {
     try {
         // записываем изменения в файл
-        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        fs.writeFileSync('config/config.json', JSON.stringify(config, null, 2));
     } catch (error) {
         console.error(error);
     }
