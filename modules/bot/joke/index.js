@@ -48,7 +48,7 @@ const getJoke = async () => {
 	let data = await getPostsFromPublic();
 	if (Array.isArray(data)) {
 		// Убираем из массива постов рекламные посты и слишком длинные ржомбы
-		let filtered = data.filter(data => (data.marked_as_ads == 0 && data.text.length >= 15 <= 512 && data.text != ""));
+		let filtered = data.filter(data => (data.marked_as_ads === 0 && data.text.length >= 15 <= 512 && data.text !== ""));
 		// Возвращаем случайную ржомбу из отфильтрованного массива
 
 		return filtered[getRandom(1, filtered.length)].text;
