@@ -1,4 +1,10 @@
 {
+  "name": "army-bot",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "cron": "^2.1.0",
     "dayjs": "^1.11.5",
