@@ -6,10 +6,10 @@
 
 ```
 army-bot
-└── modules
-    └── bot
-        ├── answers.json
-        └── commands.json
+└── locale
+     └── answers.json
+└── config
+     └── commands.json
 ```
 
 Где в файле `answers.json` хранятся шаблоны всех сообщений, отправляемых ботом, а в `commands.json` указаны описания команд, которые используются в меню.<br>
