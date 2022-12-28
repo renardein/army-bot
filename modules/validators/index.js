@@ -1,5 +1,6 @@
 const cronRegEx = /^((\*|[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9]) (\*|[0-9]|1[0-9]|2[0-3]) (\*|[1-9]|1[0-9]|2[0-9]|3[0-1]) (\*|[1-9]|1[0-2]) (\*|[0-6]))$/;
 const dateRegEx = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-\d{4}$/;
+const commandRegEx = /^\/(\w+)\s*(.+)?/;
 
 async function isValidDate(date) {
     if (!dateRegEx.test(date)) {
@@ -29,4 +30,11 @@ function isValidCronExpression(cronExpression) {
     return cronRegEx.test(cronExpression);
 }
 
-module.exports = { isValidDate, isValidCronExpression }
+async function isValidBotCommand(message) {
+    const match = commandRegEx.exec(message);
+    if (!commandRegEx.exec(message)) return;
+    const command = match[1];
+    const args = match[2] ? match[2].split(/\s+/) : [];
+    return [command, args];
+}
+module.exports = { isValidDate, isValidCronExpression, isValidBotCommand }

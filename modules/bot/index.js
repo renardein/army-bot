@@ -2,29 +2,31 @@ const subscriber = require('../../database/models/subscribers'),
     locale = require('../../locale'),
     timer = require('../timer'),
     configFile = require('../../config'),
-    valid = require('../validators'),
-    commandRegEx = /^\/(\w+)\s*(.+)?/;
+    valid = require('../validators');
 
 async function run(bot, config) {
 
     bot.on('text', async msg => {
         //Обработчик команд
-        const match = commandRegEx.exec(msg.text);
-        if (!commandRegEx.exec(msg.text)) return;
-        const command = match[1];
-        const args = match[2] ? match[2].split(/\s+/) : [];
+        if (!await valid.isValidBotCommand(msg.text))
+            return;
+        else {
+            command = message[0];
+            args = message[1];
+        }
 
         switch (command) {
             case 'start': {
-                await bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
+                bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
                     caption: locale.start
+                }).catch((error) => {
+
                 });
                 break;
             }
 
             case 'about': {
-                await bot.sendChatAction(msg.chat.id, 'typing');
-                await bot.sendMessage(msg.chat.id, locale.about, { parse_mode: 'markdown', disable_web_page_preview: true });
+                await sendMessage(bot, msg.chat.id, locale.about, { parse_mode: 'markdown', disable_web_page_preview: true });
                 break;
             }
 
@@ -33,12 +35,9 @@ async function run(bot, config) {
                     // Проверка статуса подписки
                     if (!await subscriber.isExists(msg.chat.id)) {
                         //Если нет, то подписываем
-                        await subscriber.add(msg.chat.id);
-                        await bot.sendChatAction(msg.chat.id, 'typing');
-                        await bot.sendMessage(msg.chat.id, locale.userSubscribed);
+                        await sendMessage(msg.chat.id, locale.userSubscribed);
                     } else {
-                        await bot.sendChatAction(msg.chat.id, 'typing');
-                        await bot.sendMessage(msg.chat.id, locale.userExists);
+                        await sendMessage(bot, msg.chat.id, locale.userExists);
                     }
                 } catch (err) {
                     console.log('\x1b[41m', `[ERROR] ${err.message}`);
@@ -52,11 +51,9 @@ async function run(bot, config) {
                     if (await subscriber.isExists(msg.chat.id)) {
                         //Если есть, то отписываем
                         await subscriber.remove(msg.chat.id);
-                        await bot.sendChatAction(msg.chat.id, 'typing');
-                        await bot.sendMessage(msg.chat.id, locale.userUnsubscribed);
+                        await sendMessage(bot, msg.chat.id, locale.userUnsubscribed);
                     } else {
-                        await bot.sendChatAction(msg.chat.id, 'typing');
-                        await bot.sendMessage(msg.chat.id, locale.userNotSubscribed);
+                        await sendMessage(bot, msg.chat.id, locale.userNotSubscribed);
                     }
                 } catch (err) {
                     console.log('\x1b[41m', `[ERROR] ${err.message}`);
@@ -66,8 +63,7 @@ async function run(bot, config) {
 
             case 'army': {
                 let data = await timer.getServeTime(config.armyStartDate, 'command');
-                await bot.sendChatAction(msg.chat.id, 'typing');
-                await bot.sendMessage(msg.chat.id,
+                await sendMessage(bot, msg.chat.id,
                     locale.getTemplateString(locale.army,
                         ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%subscribers%', '%progressGraphical%'],
                         [data.startDate, data.endDate, data.totalDays, data.daysPassed, data.daysLeft, data.subscribers, data.progressGraphical]),
@@ -79,8 +75,7 @@ async function run(bot, config) {
                 const uptime = Math.round(process.uptime());
                 const usedMem = Math.round(process.memoryUsage().rss / 1024 / 1024);
                 const message = locale.getTemplateString(locale.debug, ['%uptime%', '%usedMem%'], [uptime, usedMem]);
-                await bot.sendChatAction(msg.chat.id, 'typing');
-                await bot.sendMessage(msg.chat.id, message, { parse_mode: 'markdown' });
+                await sendMessage(bot, msg.chat.id, message, { parse_mode: 'markdown' });
                 break;
             }
 
@@ -95,8 +90,7 @@ async function run(bot, config) {
                                 try {
                                     config.armyStartDate = date
                                     configFile.setArmyStartDate(date);
-                                    await bot.sendChatAction(msg.chat.id, 'typing');
-                                    await bot.sendMessage(
+                                    await sendMessage(bot,
                                         msg.chat.id,
                                         locale.getTemplateString(locale.newStartingPoint, ['%startingPoint%'], [date]),
                                     );
@@ -104,8 +98,7 @@ async function run(bot, config) {
                                     console.error(error);
                                 }
                             } else {
-                                await bot.sendChatAction(msg.chat.id, 'typing');
-                                await bot.sendMessage(
+                                await sendMessage(bot,
                                     msg.chat.id,
                                     `Неверный формат даты: ${date}`
                                 );
@@ -123,6 +116,13 @@ async function run(bot, config) {
             }
         }
     });
+}
+
+async function sendMessage(bot, chatId, message) {
+    await bot.sendChatAction(chatId, 'typing');
+    setTimeout(async () => {
+        await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
+    }, 1000);
 }
 
 module.exports.run = run;
