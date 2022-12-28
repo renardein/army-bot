@@ -7,12 +7,13 @@ const subscriber = require('../../database/models/subscribers'),
 async function run(bot, config) {
 
     bot.on('text', async msg => {
-        //Обработчик команд
-        if (!await valid.isValidBotCommand(msg.text))
+        //Парсинг команд команд
+        let msgData = await valid.isValidBotCommand(msg.text);
+        if (!msgData)
             return;
         else {
-            command = message[0];
-            args = message[1];
+            command = msgData.command;
+            args = msgData.args;
         }
 
         switch (command) {

@@ -32,9 +32,15 @@ function isValidCronExpression(cronExpression) {
 
 async function isValidBotCommand(message) {
     const match = commandRegEx.exec(message);
-    if (!commandRegEx.exec(message)) return;
-    const command = match[1];
-    const args = match[2] ? match[2].split(/\s+/) : [];
-    return [command, args];
+    if (!match) {
+        return false;
+    } else {
+        const command = match[1];
+        const args = match[2] ? match[2].split(/\s+/) : [];
+        return {
+            command,
+            args
+        };
+    }
 }
 module.exports = { isValidDate, isValidCronExpression, isValidBotCommand }
