@@ -31,6 +31,7 @@ async function run(bot, config) {
 async function sendMessages(bot, subscribersList, message) {
     for (const chatId of subscribersList) {
         try {
+            await bot.sendChatAction(msg.chat.id, 'typing');
             await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
             // Пауза в 1 секунду
             await new Promise(resolve => setTimeout(resolve, 1000));

@@ -23,6 +23,7 @@ async function run(bot, config) {
             }
 
             case 'about': {
+                await bot.sendChatAction(msg.chat.id, 'typing');
                 await bot.sendMessage(msg.chat.id, locale.about, { parse_mode: 'markdown', disable_web_page_preview: true });
                 break;
             }
@@ -33,8 +34,10 @@ async function run(bot, config) {
                     if (!await subscriber.isExists(msg.chat.id)) {
                         //Если нет, то подписываем
                         await subscriber.add(msg.chat.id);
+                        await bot.sendChatAction(msg.chat.id, 'typing');
                         await bot.sendMessage(msg.chat.id, locale.userSubscribed);
                     } else {
+                        await bot.sendChatAction(msg.chat.id, 'typing');
                         await bot.sendMessage(msg.chat.id, locale.userExists);
                     }
                 } catch (err) {
@@ -49,8 +52,10 @@ async function run(bot, config) {
                     if (await subscriber.isExists(msg.chat.id)) {
                         //Если есть, то отписываем
                         await subscriber.remove(msg.chat.id);
+                        await bot.sendChatAction(msg.chat.id, 'typing');
                         await bot.sendMessage(msg.chat.id, locale.userUnsubscribed);
                     } else {
+                        await bot.sendChatAction(msg.chat.id, 'typing');
                         await bot.sendMessage(msg.chat.id, locale.userNotSubscribed);
                     }
                 } catch (err) {
@@ -61,6 +66,7 @@ async function run(bot, config) {
 
             case 'army': {
                 let data = await timer.getServeTime(config.armyStartDate, 'command');
+                await bot.sendChatAction(msg.chat.id, 'typing');
                 await bot.sendMessage(msg.chat.id,
                     locale.getTemplateString(locale.army,
                         ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%subscribers%', '%progressGraphical%'],
@@ -73,6 +79,7 @@ async function run(bot, config) {
                 const uptime = Math.round(process.uptime());
                 const usedMem = Math.round(process.memoryUsage().rss / 1024 / 1024);
                 const message = locale.getTemplateString(locale.debug, ['%uptime%', '%usedMem%'], [uptime, usedMem]);
+                await bot.sendChatAction(msg.chat.id, 'typing');
                 await bot.sendMessage(msg.chat.id, message, { parse_mode: 'markdown' });
                 break;
             }
@@ -88,6 +95,7 @@ async function run(bot, config) {
                                 try {
                                     config.armyStartDate = date
                                     configFile.setArmyStartDate(date);
+                                    await bot.sendChatAction(msg.chat.id, 'typing');
                                     await bot.sendMessage(
                                         msg.chat.id,
                                         locale.getTemplateString(locale.newStartingPoint, ['%startingPoint%'], [date]),
@@ -96,6 +104,7 @@ async function run(bot, config) {
                                     console.error(error);
                                 }
                             } else {
+                                await bot.sendChatAction(msg.chat.id, 'typing');
                                 await bot.sendMessage(
                                     msg.chat.id,
                                     `Неверный формат даты: ${date}`
