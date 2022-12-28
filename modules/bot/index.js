@@ -123,7 +123,7 @@ async function sendMessage(bot, chatId, message) {
     await bot.sendChatAction(chatId, 'typing');
     setTimeout(async () => {
         await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
-    }, 1000);
+    }, 500);
 }
 
 module.exports.run = run;
