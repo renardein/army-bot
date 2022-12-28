@@ -12,7 +12,7 @@ dayjs.extend(customParseFormat);
  * @param {import('vk-io').VK} [vk] - Экземпляр VK API (только для type === 'mailer')
  * @returns {Object}
  */
-async function getServeTime(startTime, type, vk) {
+async function getServeTime(startTime, type) {
     const startDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true);
     const endDate = startDate.add(1, 'year');
     const subscribersCount = await subscriber.count()
@@ -38,7 +38,7 @@ async function getServeTime(startTime, type, vk) {
                 daysPassed: dayjs().diff(startDate, 'day'),  // Дней прошло
                 daysLeft: endDate.diff(dayjs(), 'day'), //Дней осталось
                 progressGraphical: generateProgressBar((dayjs().diff(startDate, 'day') / endDate.diff(startDate, 'day') * 100).toFixed(4)),
-                joke: await joke.getJoke(vk) // Ржомба
+                joke: await joke.getJoke() // Ржомба
             }
             return data;
         }
