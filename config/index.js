@@ -1,6 +1,17 @@
 const fs = require('fs');
 
 const configPath = 'config/config.json';
+const commandsPath = 'config/commands.json'
+
+function readTelegramCommands() {
+    try {
+        const configFile = fs.readFileSync(commandsPath, 'utf8');
+        return JSON.parse(configFile);
+    } catch (error) {
+        console.error(error);
+        return {};
+    }
+}
 
 function readConfig() {
     try {
@@ -50,6 +61,7 @@ function setArmyStartDate(armyStartDate) {
 
 module.exports = {
     readConfig,
+    readTelegramCommands,
     setCronSchedule,
     setAdminUserId,
     setArmyStartDate

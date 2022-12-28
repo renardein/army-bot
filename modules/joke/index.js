@@ -1,5 +1,5 @@
 const { VK } = require('vk-io');
-const config = require('../../../config')
+const config = require('../../config');
 require('dotenv').config();
 
 let botConfig = config.readConfig();

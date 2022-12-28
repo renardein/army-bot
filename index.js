@@ -1,11 +1,9 @@
 const { config } = require('dotenv');
 const TelegramBot = require('node-telegram-bot-api');
 const bot = require('./modules/bot');
-const mailer = require('./modules/bot/mailer');
-const fs = require('fs');
-const botCommands = JSON.parse(fs.readFileSync('modules/bot/commands.json'));
-const process = require('process');
-const { readConfig } = require('./config');
+const mailer = require('./modules/mailer');
+const { readConfig, readTelegramCommands } = require('./config');
+const botCommands = readTelegramCommands();
 
 require('dotenv').config();
 
