@@ -19,7 +19,7 @@ cd army-bot
 npm install
 ```
 
-Переименовать `.env_example` в `.env` и прописать в него токены от ВКонтакте и Telegram
+Переименовать `.env_example` в `.env` и прописать в него сервисный ключ от приложения [ВКонтакте](https://vk.com/editapp?act=create) и токен бота [Telegram](https://botfather.t.me)
 
 ```
 node ./index.js
