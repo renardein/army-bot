@@ -1,12 +1,9 @@
 const subscriber = require('../../database/models/subscribers'),
-    fs = require('fs'),
-    answers = require('./gen_answer.js'),
-    timer = require('./timer'),
+    locale = require('../../locale'),
+    timer = require('../timer'),
     configFile = require('../../config'),
-    valid = require('./validators')
-commandRegEx = /^\/(\w+)\s*(.+)?/,
-    timeRegEx = /^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$/,
-    cronExpressionRegEx = /^(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)\s+(?:[\*]{1}|[\d]{1,2}(?:-[\d]{1,2}(?:\/[\d]{1,2})?)?)$/;
+    valid = require('../validators'),
+    commandRegEx = /^\/(\w+)\s*(.+)?/;
 
 async function run(bot, config) {
 
@@ -20,13 +17,13 @@ async function run(bot, config) {
         switch (command) {
             case 'start': {
                 await bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
-                    caption: answers.start
+                    caption: locale.start
                 });
                 break;
             }
 
             case 'about': {
-                await bot.sendMessage(msg.chat.id, answers.about, { parse_mode: 'markdown', disable_web_page_preview: true });
+                await bot.sendMessage(msg.chat.id, locale.about, { parse_mode: 'markdown', disable_web_page_preview: true });
                 break;
             }
 
@@ -36,9 +33,9 @@ async function run(bot, config) {
                     if (!await subscriber.isExists(msg.chat.id)) {
                         //Если нет, то подписываем
                         await subscriber.add(msg.chat.id);
-                        await bot.sendMessage(msg.chat.id, answers.userSubscribed);
+                        await bot.sendMessage(msg.chat.id, locale.userSubscribed);
                     } else {
-                        await bot.sendMessage(msg.chat.id, answers.userExists);
+                        await bot.sendMessage(msg.chat.id, locale.userExists);
                     }
                 } catch (err) {
                     console.log('\x1b[41m', `[ERROR] ${err.message}`);
@@ -52,9 +49,9 @@ async function run(bot, config) {
                     if (await subscriber.isExists(msg.chat.id)) {
                         //Если есть, то отписываем
                         await subscriber.remove(msg.chat.id);
-                        await bot.sendMessage(msg.chat.id, answers.userUnsubscribed);
+                        await bot.sendMessage(msg.chat.id, locale.userUnsubscribed);
                     } else {
-                        await bot.sendMessage(msg.chat.id, answers.userNotSubscribed);
+                        await bot.sendMessage(msg.chat.id, locale.userNotSubscribed);
                     }
                 } catch (err) {
                     console.log('\x1b[41m', `[ERROR] ${err.message}`);
@@ -65,7 +62,7 @@ async function run(bot, config) {
             case 'army': {
                 let data = await timer.getServeTime(config.armyStartDate, 'command');
                 await bot.sendMessage(msg.chat.id,
-                    answers.getTemplateString(answers.army,
+                    locale.getTemplateString(locale.army,
                         ['%startDate%', '%endDate%', '%totalDays%', '%daysPassed%', '%daysLeft%', '%subscribers%', '%progressGraphical%'],
                         [data.startDate, data.endDate, data.totalDays, data.daysPassed, data.daysLeft, data.subscribers, data.progressGraphical]),
                     { parse_mode: 'markdown' })
@@ -75,7 +72,7 @@ async function run(bot, config) {
             case 'debug': {
                 const uptime = Math.round(process.uptime());
                 const usedMem = Math.round(process.memoryUsage().rss / 1024 / 1024);
-                const message = answers.getTemplateString(answers.debug, ['%uptime%', '%usedMem%'], [uptime, usedMem]);
+                const message = locale.getTemplateString(locale.debug, ['%uptime%', '%usedMem%'], [uptime, usedMem]);
                 await bot.sendMessage(msg.chat.id, message, { parse_mode: 'markdown' });
                 break;
             }
@@ -93,7 +90,7 @@ async function run(bot, config) {
                                     configFile.setArmyStartDate(date);
                                     await bot.sendMessage(
                                         msg.chat.id,
-                                        answers.getTemplateString(answers.newStartingPoint, ['%startingPoint%'], [date]),
+                                        locale.getTemplateString(locale.newStartingPoint, ['%startingPoint%'], [date]),
                                     );
                                 } catch (error) {
                                     console.error(error);
@@ -101,18 +98,14 @@ async function run(bot, config) {
                             } else {
                                 await bot.sendMessage(
                                     msg.chat.id,
-                                    `Неверный формат даты: ${date}`,
+                                    `Неверный формат даты: ${date}`
                                 );
                             }
                             break;
                         }
 
-                        case 'mailer': {
-                            switch (args[0]) {
-                                case 'cron': {
-                                    break;
-                                }
-                            }
+                        case 'mail': {
+
                             break;
                         }
                     }
@@ -121,7 +114,6 @@ async function run(bot, config) {
             }
         }
     });
-
 }
 
 module.exports.run = run;
