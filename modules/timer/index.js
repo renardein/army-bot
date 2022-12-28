@@ -48,6 +48,8 @@ async function getServeTime(startTime, type, vk) {
 }
 
 function generateProgressBar(percentage) {
+    percentage = Math.min(percentage, 100);  // ограничиваем percentage значением 100
+
     const progressBarLength = 14;
     const progressBarFilled = Math.floor(percentage / (100 / progressBarLength));
     const progressBarEmpty = progressBarLength - progressBarFilled;
