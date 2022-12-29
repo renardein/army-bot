@@ -36,7 +36,7 @@ async function run(bot, config) {
                     // Проверка статуса подписки
                     if (!await subscriber.isExists(msg.chat.id)) {
                         //Если нет, то подписываем
-                        await sendMessage(msg.chat.id, locale.userSubscribed);
+                        await sendMessage(bot, msg.chat.id, locale.userSubscribed);
                     } else {
                         await sendMessage(bot, msg.chat.id, locale.userExists);
                     }
