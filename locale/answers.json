@@ -9,7 +9,7 @@
     "userExists": "⚠️ Вы уже подписаны на обновления",
     "userNotSubscribed": "⚠️ Вы еще не подписаны на обновления",
     "newStartingPoint": "✅ Установлена новая точка отсчета %startingPoint%",
-    "invalidStartinPointFormat": "❌ %startingPoint% является неверным форматом даты ДД-ММ-ГГГГ",
+    "invalidStartingPointFormat": "❌ %startingPoint% является неверным форматом даты ДД-ММ-ГГГГ",
     "setCronTime": "✅ Установлена новая точка отсчета",
     "invalidCronPatterFormat": "❌ %input% является неверным форматом времени ЧЧ:ММ",
     "groupChatAdded": "Привет, %chatName%\n\nТеперь этот чат подписан на рассылку, чтобы отказаться от нее достаточно исключить бота из чата\nУзнать больше /about",

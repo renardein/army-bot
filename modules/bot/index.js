@@ -99,6 +99,7 @@ async function run(bot, config) {
                                     console.error(error);
                                 }
                             } else {
+                                await sendMessage(bot, msg.chat.id, locale.getTemplateString(locale.invalidStartingPointFormat, ['%startingPoint%'], [date]))
                                 await sendMessage(bot,
                                     msg.chat.id,
                                     `Неверный формат даты: ${date}`
