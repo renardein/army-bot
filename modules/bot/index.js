@@ -36,6 +36,7 @@ async function run(bot, config) {
                     // Проверка статуса подписки
                     if (!await subscriber.isExists(msg.chat.id)) {
                         //Если нет, то подписываем
+                        await subscriber.add(msg.chat.id)
                         await sendMessage(bot, msg.chat.id, locale.userSubscribed);
                     } else {
                         await sendMessage(bot, msg.chat.id, locale.userExists);
@@ -52,7 +53,7 @@ async function run(bot, config) {
                     if (await subscriber.isExists(msg.chat.id)) {
                         //Если есть, то отписываем
                         await subscriber.remove(msg.chat.id);
-                        await sendMessage(bot, msg.chat.id, locale.userUnsubscribed);
+                        await sendMessage(bot, msg.chat.id, locale.userUnubscribed);
                     } else {
                         await sendMessage(bot, msg.chat.id, locale.userNotSubscribed);
                     }

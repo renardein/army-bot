@@ -15,7 +15,7 @@ dayjs.extend(customParseFormat);
 async function getServeTime(startTime, type) {
     const startDate = dayjs(startTime, "DD-MM-YYYY", 'ru', true);
     const endDate = startDate.add(1, 'year');
-    const subscribersCount = await subscriber.count()
+    let subscribersCount = await subscriber.count()
     let data;
     switch (type) {
         case 'command': {

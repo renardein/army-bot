@@ -10,6 +10,11 @@ async function run(bot, config) {
         try {
             //Получаем массив с chatId подписанных
             let subscribersList = await subscriber.getAll();
+            //Если массив с подписчиками пустой, то отменяем выполнение функции
+            if (subscribersList.length === 0) {
+                console.log('\x1b[34m', `[Mailer] No available subscribers to send messages`);
+                return;
+            }
             //Получаем данные с расчетами даты и дней
             const data = await timer.getServeTime(config.armyStartDate, 'mailer');
             //Подменяем переменные в шаблоне сообщений
@@ -31,7 +36,7 @@ async function run(bot, config) {
 async function sendMessages(bot, subscribersList, message) {
     for (const chatId of subscribersList) {
         try {
-            await bot.sendChatAction(msg.chat.id, 'typing');
+            await bot.sendChatAction(chatId, 'typing');
             await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
             // Пауза в 1 секунду
             await new Promise(resolve => setTimeout(resolve, 1000));

@@ -54,18 +54,16 @@ async function count() {
 }
 
 async function getAll() {
-    const chatIds = [];
-
-    db.all('SELECT chat_id FROM subscribers', (err, rows) => {
-        if (err) {
-            console.error(err.message);
-        }
-        if (rows) {
-            rows.forEach((row) => {
-                chatIds.push(row.chat_id);
-            });
-        }
+    return new Promise((resolve, reject) => {
+        db.all('SELECT chat_id FROM subscribers', (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                const chatIds = rows.map(row => row.chat_id);
+                resolve(chatIds);
+            }
+        });
     });
-    return chatIds;
 }
+
 module.exports = { add, remove, count, isExists, getAll }
