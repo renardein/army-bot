@@ -74,8 +74,10 @@ async function run(bot, config) {
             }
 
             case 'debug': {
-                const uptime = Math.round(process.uptime());
                 const usedMem = Math.round(process.memoryUsage().rss / 1024 / 1024);
+                const uptime = uptimeTimestamp >= 60
+                    ? Math.round(process.uptime() / 60) + " минут"
+                    : Math.round(process.uptime()) + " секунд";
                 const message = locale.getTemplateString(locale.debug, ['%uptime%', '%usedMem%'], [uptime, usedMem]);
                 await sendMessage(bot, msg.chat.id, message, { parse_mode: 'markdown' });
                 break;
