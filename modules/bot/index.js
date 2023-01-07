@@ -103,10 +103,6 @@ async function run(bot, config) {
                                 }
                             } else {
                                 await sendMessage(bot, msg.chat.id, locale.getTemplateString(locale.invalidStartingPointFormat, ['%startingPoint%'], [date]))
-                                await sendMessage(bot,
-                                    msg.chat.id,
-                                    `Неверный формат даты: ${date}`
-                                );
                             }
                             break;
                         }
@@ -136,19 +132,25 @@ async function run(bot, config) {
     });
 
     //Обработка исключения бота из группы или супергруппы с последующим удаленияем ID группы из списка рассылки
-    bot.on("left_chat_member", (msg) => {
+    bot.on('left_chat_member', (msg) => {
         const leftMemberId = msg.left_chat_member.id
         if (leftMemberId === config.botProfileId && subscriber.isExists(msg.chat.id))
             subscriber.remove(msg.chat.id)
         else
             return;
     });
+
+    bot.on('error', (err) => {
+        console.error(err);
+    })
 }
 async function sendMessage(bot, chatId, message) {
-    await bot.sendChatAction(chatId, 'typing');
-    setTimeout(async () => {
-        await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
-    }, 500);
+    await bot.sendChatAction(chatId, 'typing').then(() => {
+        setTimeout(async () => {
+            await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
+        }, 500);
+
+    });
 }
 
 module.exports.run = run;
