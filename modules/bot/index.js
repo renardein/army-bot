@@ -121,8 +121,29 @@ async function run(bot, config) {
             }
         }
     });
-}
 
+    //Обработка добавления бота в группу или супергруппу
+    bot.on('new_chat_members', (msg) => {
+        // получаем ID нового участника чата
+        const newMemberId = msg.new_chat_member.id;
+        // получаем ID бота
+        const botId = bot.id;
+        // если ID нового участника совпадает с ID бота, то отправляем сообщение
+        if (newMemberId === config.botProfileId) {
+            subscriber.add(msg.chat.id)
+            sendMessage(bot, msg.chat.id, locale.getTemplateString(locale.groupChatAdded, ['%chatName%'], [msg.chat.title]));
+        }
+    });
+
+    //Обработка исключения бота из группы или супергруппы с последующим удаленияем ID группы из списка рассылки
+    bot.on("left_chat_member", (msg) => {
+        const leftMemberId = msg.left_chat_member.id
+        if (leftMemberId === config.botProfileId && subscriber.isExists(msg.chat.id))
+            subscriber.remove(msg.chat.id)
+        else
+            return;
+    });
+}
 async function sendMessage(bot, chatId, message) {
     await bot.sendChatAction(chatId, 'typing');
     setTimeout(async () => {

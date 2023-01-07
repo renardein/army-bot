@@ -59,10 +59,20 @@ function setArmyStartDate(armyStartDate) {
     writeConfig(config);
 }
 
+function setBotProfileId(botProfileId) {
+    // читаем текущую конфигурацию
+    const config = readConfig();
+    // изменяем параметр armyStartDate
+    config.botProfileId = botProfileId;
+    // записываем изменения в файл
+    writeConfig(config);
+}
+
 module.exports = {
     readConfig,
     readTelegramCommands,
     setCronSchedule,
     setAdminUserId,
-    setArmyStartDate
+    setArmyStartDate,
+    setBotProfileId
 };

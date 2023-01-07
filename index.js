@@ -2,20 +2,22 @@ const { config } = require('dotenv');
 const TelegramBot = require('node-telegram-bot-api');
 const bot = require('./modules/bot');
 const mailer = require('./modules/mailer');
-const { readConfig, readTelegramCommands } = require('./config');
+const { readConfig, readTelegramCommands, setBotProfileId } = require('./config');
 const botCommands = readTelegramCommands();
 
 require('dotenv').config();
 
 let currentConfig = readConfig();
 api = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
-
 //Запуск бота
 async function start() {
     // Запуск бота
     await bot.run(api, currentConfig);
     // Получение информации о боте и вывод сообщения о старте
     const botInfo = await api.getMe();
+    //Получаем ID профиля бота и записываем его в конфиг
+    currentConfig.botProfileId = botInfo.id;
+    setBotProfileId(currentConfig.botProfileId);
     console.log('\x1b[32m', `[Bot] @${botInfo.username} started.`);
 
     // Запуск рассылки
