@@ -2,7 +2,8 @@ const subscriber = require('../../database/models/subscribers'),
     locale = require('../../locale'),
     timer = require('../timer'),
     configFile = require('../../config'),
-    valid = require('../validators');
+    valid = require('../validators'),
+    fs = require('fs');
 
 async function run(bot, config) {
 
@@ -18,11 +19,7 @@ async function run(bot, config) {
 
         switch (command) {
             case 'start': {
-                bot.sendAudio(msg.chat.id, 'CQACAgIAAxkBAANqYzxS_P4wP09n5lf8b68i_gQH38UAArIdAAJ2tehJbllN1BK0CtkqBA', {
-                    caption: locale.start
-                }).catch((error) => {
-
-                });
+                await sendMessage(bot, msg.chat.id, locale.start, { parse_mode: 'markdown', disable_web_page_preview: true });
                 break;
             }
 

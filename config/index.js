@@ -68,6 +68,7 @@ function setBotProfileId(botProfileId) {
     writeConfig(config);
 }
 
+
 module.exports = {
     readConfig,
     readTelegramCommands,

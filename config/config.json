@@ -2,9 +2,9 @@
   "cronSchedule": "* * * * *",
   "armyStartDate": "11-11-2011",
   "adminUserId": 93195391,
+  "botProfileId": 5683941365,
   "jokePublics": [
     -45491419,
     -149279263
-  ],
-  "botProfileId": 5683941365
+  ]
 }
