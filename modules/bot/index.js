@@ -19,7 +19,8 @@ async function run(bot, config) {
 
         switch (command) {
             case 'start': {
-                await sendMessage(bot, msg.chat.id, locale.start, { parse_mode: 'markdown', disable_web_page_preview: true });
+                await sendMessage(bot, msg.chat.id, locale.getTemplateString(locale.start, ['%username%'], [msg.from.first_name]),
+                    { parse_mode: 'markdown', disable_web_page_preview: true });
                 break;
             }
 
