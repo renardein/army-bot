@@ -1,9 +1,8 @@
-const subscriber = require('../../database/models/subscribers'),
-    locale = require('../../locale'),
-    timer = require('../timer'),
-    configFile = require('../../config'),
-    valid = require('../validators'),
-    fs = require('fs');
+const subscriber = require('../../database/models/subscribers');
+const locale = require('../../locale');
+const timer = require('../timer');
+const configFile = require('../../config');
+const valid = require('../validators');
 
 async function run(bot, config) {
 

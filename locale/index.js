@@ -1,5 +1,5 @@
-const fs = require('fs'),
-  answers = JSON.parse(fs.readFileSync('locale/answers.json'));
+const fs = require('fs');
+const answers = JSON.parse(fs.readFileSync('locale/answers.json'));
 
 
 //Заменяет %переменные% в строке на их значения

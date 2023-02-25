@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 const configPath = 'config/config.json';
 const commandsPath = 'config/commands.json'
 

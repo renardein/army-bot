@@ -37,9 +37,10 @@ async function sendMessages(bot, subscribersList, message) {
     for (const chatId of subscribersList) {
         try {
             await bot.sendChatAction(chatId, 'typing');
-            await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true });
-            // Пауза в 1 секунду
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await bot.sendMessage(chatId, message, { parse_mode: 'markdown', disable_web_page_preview: true }).then(function () {
+                // Пауза в 1 секунду
+                setTimeout(resolve, 1000);
+            })
         } catch (err) {
             console.log('\x1b[41m', `[ERROR] ${err.message}`);
         }
